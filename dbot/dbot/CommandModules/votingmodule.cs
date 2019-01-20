@@ -26,8 +26,15 @@ namespace dbot.CommandModules
         {
             if (!_votingService.votingOpen())
             {
-                _votingService.startVote();
-                await ReplyAsync("Voting has opened!");
+                if (_nominationsService.getNominations().Any())
+                {
+                    _votingService.startVote();
+                    await ReplyAsync("Voting has opened!");
+                }
+                else
+                {
+                    await ReplyAsync("There must be at least one nomination before voting can start!");
+                }
             }
             else
             {
@@ -41,7 +48,7 @@ namespace dbot.CommandModules
             if (_votingService.votingOpen())
             {
                 _votingService.endVote();
-                var results = _votingService.getResults();
+                var results = _votingService.getResults(_nominationsService.getNominations());
                 _votingService.clearResults();
                 var sb = new StringBuilder();
                 sb.AppendLine("Voting has ended! The results: ");
@@ -64,8 +71,15 @@ namespace dbot.CommandModules
         {
             if (_votingService.votingOpen())
             {
-                _votingService.vote(Context.User, movId);
-                await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
+                if (_nominationsService.getNominations().Select(x => x.id).Contains(movId))
+                {
+                    _votingService.vote(Context.User, movId);
+                    await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
+                }
+                else
+                {
+                    await ReplyAsync($"Unexpected vote for {movId}, please try again!");
+                }
             }
             else
             {

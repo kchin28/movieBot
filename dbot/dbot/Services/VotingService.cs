@@ -49,26 +49,22 @@ namespace dbot.Services
             _votingOpen = false;
         }
 
-        public IEnumerable<VotingResult> getResults()
+        public IEnumerable<VotingResult> getResults(IEnumerable<NomObj> nominations)
         {
             var results = new List<VotingResult>();
 
-            //For movie in nominationservice
             //Tabulate results
-            for(int i = 0; i < 10; i++)
+            foreach(var nomination in nominations)
             {
-                results.Add(new VotingResult { name = $"test{i}", votes = _votes.Values.Where(x => x == i).Count() });
+                results.Add(new VotingResult { name = nomination.movName,
+                                               votes = _votes.Values.Where(x => x == nomination.id).Count() });
             }
             return results;
         }
 
         public void clearResults()
         {
-            int ignore;
-            foreach(var key in _votes.Keys)
-            {
-                _votes.Remove(key, out ignore);
-            }
+            _votes.Clear();
         }
     }
 }
