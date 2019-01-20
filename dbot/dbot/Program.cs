@@ -30,6 +30,7 @@ namespace dbot
           
             serviceCollection.AddSingleton(new NominationsService());
             serviceCollection.AddSingleton(new VotingService());
+            serviceCollection.AddSingleton(new OmdbService(omdbToken));
 
             services = serviceCollection.BuildServiceProvider();
             await InstallCommands();
