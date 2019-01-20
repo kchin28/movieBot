@@ -32,9 +32,27 @@ namespace dbot.Services
             return sb.ToString();
         } 
 
+        public string viewNominationsWithId()
+        {
+            var nominations = currNoms.Values;
+
+            var sb = new StringBuilder();
+
+            foreach(var nomination in nominations)
+            {
+                sb.AppendLine($"{nomination.id}. {nomination.movName}");
+            }
+            return sb.ToString();
+        }
+
         public IEnumerable<NomObj> getNominations()
         {
             return currNoms.Select(x => x.Value);
+        }
+
+        public void clearNominations()
+        {
+            currNoms.Clear();
         }
 
         //cannot delete nominations only replace bc the id's won't be in order

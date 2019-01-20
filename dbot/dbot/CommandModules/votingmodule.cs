@@ -30,6 +30,7 @@ namespace dbot.CommandModules
                 {
                     _votingService.startVote();
                     await ReplyAsync("Voting has opened!");
+                    await ReplyAsync(_nominationsService.viewNominationsWithId());
                 }
                 else
                 {
@@ -50,6 +51,7 @@ namespace dbot.CommandModules
                 _votingService.endVote();
                 var results = _votingService.getResults(_nominationsService.getNominations());
                 _votingService.clearResults();
+                _nominationsService.clearNominations();
                 var sb = new StringBuilder();
                 sb.AppendLine("Voting has ended! The results: ");
                 foreach (var res in results)
