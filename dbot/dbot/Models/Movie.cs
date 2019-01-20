@@ -4,7 +4,7 @@ using System.Text;
 
 namespace dbot.Models
 {
-    class Movie
+    public class Movie
     {
         public string Title {get; set;}
         public string Year {get; set;}
@@ -31,5 +31,19 @@ namespace dbot.Models
         public string Production {get; set;}
         public string Website {get; set;}
         public string Response {get; set;}
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"**{Title} - ({Year}) - {Runtime}**");
+            sb.AppendLine($"{Plot}");
+            foreach(var rating in Ratings)
+            {
+                sb.AppendLine($"{rating.Source} - {rating.Value}");
+            }
+            sb.AppendLine($"{Poster}");
+            return sb.ToString();
+        }
     }
 }

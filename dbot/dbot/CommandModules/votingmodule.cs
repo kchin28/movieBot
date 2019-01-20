@@ -15,10 +15,12 @@ namespace dbot.CommandModules
     {
         private readonly VotingService _votingService;
         private readonly NominationsService _nominationsService;
-        public VotingModule(VotingService votingService, NominationsService nominationsService)
+        private readonly OmdbService _omdbService;
+        public VotingModule(VotingService votingService, NominationsService nominationsService, OmdbService omdbService)
         {
             _votingService = votingService;
             _nominationsService = nominationsService;
+            _omdbService = omdbService;
         }
 
         [Command("start")]
@@ -56,11 +58,14 @@ namespace dbot.CommandModules
                 sb.AppendLine("Voting has ended! The results: ");
                 foreach (var res in results)
                 {
-                    sb.AppendLine($"{res.name} : {res.votes}");
+                    sb.AppendLine($"{res.movie.movName}: {res.votes}");
                 }
-                var winner = results.OrderByDescending(x => x.votes);
-                sb.AppendLine($"The winner is: {winner.First().name}");
+                var winner = results.OrderByDescending(x => x.votes).First();
+                sb.AppendLine($"The winner is: {winner.movie.movName}");
                 await ReplyAsync(sb.ToString());
+                var movie = await _omdbService.GetMovieByTitle(winner.movie.movName);
+                await ReplyAsync(movie.ToString());
+                
             }
             else
             {
@@ -99,7 +104,7 @@ namespace dbot.CommandModules
             {
                 foreach (var res in results)
                 {
-                    sb.AppendLine($"{res.name} : {res.votes}");
+                    sb.AppendLine($"{res.movie.movName} : {res.votes}");
                 }
                 await ReplyAsync(sb.ToString());
             }

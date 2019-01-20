@@ -8,7 +8,7 @@ namespace dbot.Services
 {
     public class VotingResult
     {
-        public string name { get; set; }
+        public NomObj movie { get; set; }
         public int votes { get; set; }
     }
 
@@ -56,7 +56,7 @@ namespace dbot.Services
             //Tabulate results
             foreach(var nomination in nominations)
             {
-                results.Add(new VotingResult { name = nomination.movName,
+                results.Add(new VotingResult { movie = nomination,
                                                votes = _votes.Values.Where(x => x == nomination.id).Count() });
             }
             return results;

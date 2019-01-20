@@ -6,6 +6,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using dbot.Services;
+using dbot.CommandModules;
 
 namespace dbot
 {
@@ -44,6 +45,7 @@ namespace dbot
         public async Task InstallCommands() {
             client.MessageReceived += HandleCommand;
             await commands.AddModulesAsync(Assembly.GetEntryAssembly(),services);
+            await commands.AddModuleAsync<InfoModule>(services);
         }
 
         public async Task HandleCommand(SocketMessage messageParam)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace dbot.Services
 {
-    class OmdbService
+    public class OmdbService
     {
         private string _omdbToken;
         private string _baseUri;
@@ -45,6 +45,12 @@ namespace dbot.Services
         public async Task<Movie> GetMovieByTitle(string title)
         {
             var movie = await Request<Movie>($"t={title}").ConfigureAwait(false);
+            return movie;
+        }
+
+        public async Task<Movie> GetMovieByTitleYear(string title, int year)
+        {
+            var movie = await Request<Movie>($"t={title}&y={year}").ConfigureAwait(false);
             return movie;
         }
 
