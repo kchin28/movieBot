@@ -90,7 +90,7 @@ namespace dbot.CommandModules
         [Command("results")]
         public async Task Results()
         {
-            var results = _votingService.getResults();
+            var results = _votingService.getResults(_nominationsService.getNominations());
             var sb = new StringBuilder();
 
             if (_votingService.votingOpen())
