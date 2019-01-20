@@ -6,7 +6,9 @@ namespace dbot
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var discordToken = TokenManager.getToken(TokenKey.DiscordToken);
+            var omdbToken = TokenManager.getToken(TokenKey.OMDBToken);
+            Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
         }
     }
 }
