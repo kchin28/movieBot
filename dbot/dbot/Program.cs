@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using dbot.Services;
 
 namespace dbot
 {
@@ -13,7 +14,7 @@ namespace dbot
         private CommandService commands;
         private DiscordSocketClient client;
         private IServiceProvider services;
-
+        private IServiceCollection serviceCollection;
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
 
@@ -25,8 +26,8 @@ namespace dbot
 
             client = new DiscordSocketClient();
             commands = new CommandService();
-            services = new ServiceCollection()
-                .BuildServiceProvider();
+            serviceCollection = new ServiceCollection();
+            services = serviceCollection.BuildServiceProvider();
 
             await InstallCommands();
 
@@ -38,6 +39,9 @@ namespace dbot
 
         public async Task InstallCommands() {
             client.MessageReceived += HandleCommand;
+
+            serviceCollection.AddSingleton(new NominationsService());
+            //add votingservice
             await commands.AddModulesAsync(Assembly.GetEntryAssembly(),services);
         }
 
