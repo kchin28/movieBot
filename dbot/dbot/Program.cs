@@ -5,6 +5,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using dbot.Services;
 
 namespace dbot
 {
@@ -25,9 +26,11 @@ namespace dbot
 
             client = new DiscordSocketClient();
             commands = new CommandService();
-            services = new ServiceCollection()
-                .BuildServiceProvider();
+            var service = new ServiceCollection();
 
+            service.AddSingleton(new VotingService());
+
+            services = service.BuildServiceProvider();
             await InstallCommands();
 
             //  client.Log += Log;
