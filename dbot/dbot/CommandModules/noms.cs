@@ -17,10 +17,19 @@ namespace dbot.CommandModules
         {
             _nominationsService = ns;
         }
-        public async Task addNomination()
+
+        [Command("nominate")]
+        public async Task addNominationASync(string name)
         {
-            var success = _nominationsService.addNom();
-            await ReplyAsync();
+            _nominationsService.addNom(Context.User,name);
+            await ReplyAsync("thanks for nominating");
+        }
+
+        [Command("nominations")]
+        public async Task viewNominationsAsynch() {
+            string result = _nominationsService.viewNominations();
+            await ReplyAsync(result);
+
         }
     }
 }   
