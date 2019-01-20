@@ -13,10 +13,8 @@ namespace dbot.CommandModules
 
         [Command("nominate"), Summary("nominate a movie with its title")]
         public async Task Nominate(String movName) {
-            var omdb = new Omdb();
-            var movie = await omdb.GetMovie(movName);
-
-            await
+            // var omdb = new Omdb();
+            // var movie = await omdb.GetMovie(movName);
         } 
     }
 }   
