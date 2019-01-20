@@ -46,10 +46,10 @@ namespace dbot
             var message = messageParam as SocketUserMessage;
 
             //check the message for null etc 
-           // if (message == null) return;
+            if (message == null) return;
             int argPos = 0;
 
-            //  if (!(message.HasCharPrefix('!', ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+            if (!(message.HasCharPrefix('!', ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
 
             var context = new CommandContext(client, message);
             var result = await commands.ExecuteAsync(context, argPos, services);
