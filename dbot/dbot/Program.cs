@@ -14,7 +14,7 @@ namespace dbot
         private CommandService commands;
         private DiscordSocketClient client;
         private IServiceProvider services;
-
+        private IServiceCollection serviceCollection;
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
 
@@ -26,11 +26,12 @@ namespace dbot
 
             client = new DiscordSocketClient();
             commands = new CommandService();
-            var service = new ServiceCollection();
+            serviceCollection = new ServiceCollection();
+          
+            serviceCollection.AddSingleton(new NominationsService());
+            serviceCollection.AddSingleton(new VotingService());
 
-            service.AddSingleton(new VotingService());
-
-            services = service.BuildServiceProvider();
+            services = serviceCollection.BuildServiceProvider();
             await InstallCommands();
 
             //  client.Log += Log;
