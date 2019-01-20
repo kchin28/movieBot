@@ -10,9 +10,10 @@ namespace dbot.Services
     {
         private static ConcurrentDictionary<IUser, NomObj> currNoms = new ConcurrentDictionary<IUser, NomObj>();
 
-        public void addNom(IUser userName,string title) { //no omdb verification currently
+        public void addNom(IUser userName,string title, string imdbID) { //no omdb verification currently 
+
                 //only keeps last nomination
-                var newNom = new NomObj(title, currNoms.Count+1);
+                var newNom = new NomObj(title, currNoms.Count+1,imdbID);
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
@@ -62,11 +63,12 @@ namespace dbot.Services
     public class NomObj {
         public string movName;
         public int id;
+        public string imdb;
 
-        public NomObj(string movie, int num) {
+        public NomObj(string movie, int num, string imdbID) {
             movName = movie;
             id = num;
-
+            imdb = imdbID;
         }
 
     }
