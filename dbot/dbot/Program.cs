@@ -27,8 +27,11 @@ namespace dbot
             client = new DiscordSocketClient();
             commands = new CommandService();
             serviceCollection = new ServiceCollection();
-            services = serviceCollection.BuildServiceProvider();
+          
+            serviceCollection.AddSingleton(new NominationsService());
+            serviceCollection.AddSingleton(new VotingService());
 
+            services = serviceCollection.BuildServiceProvider();
             await InstallCommands();
 
             //  client.Log += Log;
@@ -39,9 +42,6 @@ namespace dbot
 
         public async Task InstallCommands() {
             client.MessageReceived += HandleCommand;
-
-            serviceCollection.AddSingleton(new NominationsService());
-            //add votingservice
             await commands.AddModulesAsync(Assembly.GetEntryAssembly(),services);
         }
 
