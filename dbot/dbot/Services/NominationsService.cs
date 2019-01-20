@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Discord;
@@ -30,6 +31,11 @@ namespace dbot.Services
             }
             return sb.ToString();
         } 
+
+        public IEnumerable<NomObj> getNominations()
+        {
+            return currNoms.Select(x => x.Value);
+        }
 
         //cannot delete nominations only replace bc the id's won't be in order
         //no verification on omdb

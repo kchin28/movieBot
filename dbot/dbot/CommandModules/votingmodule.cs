@@ -14,9 +14,11 @@ namespace dbot.CommandModules
     public class VotingModule : ModuleBase
     {
         private readonly VotingService _votingService;
-        public VotingModule(VotingService votingService)
+        private readonly NominationsService _nominationsService;
+        public VotingModule(VotingService votingService, NominationsService nominationsService)
         {
             _votingService = votingService;
+            _nominationsService = nominationsService;
         }
 
         [Command("start")]
