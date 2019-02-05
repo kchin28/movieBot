@@ -269,3 +269,4 @@ __pycache__/
 
 # secrets
 secrets.json
+debugsecrets.json

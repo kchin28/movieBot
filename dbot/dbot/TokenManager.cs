@@ -15,7 +15,11 @@ namespace dbot
     {
         private static readonly string _discordToken = "discordToken";
         private static readonly string _omdbToken = "omdbToken";
+    #if DEBUG
+        private static readonly string _secretsUri = "debugsecrets.json";
+    #else
         private static readonly string _secretsUri = "secrets.json";
+    #endif
         
         public static string getToken(TokenKey tok)
         {
