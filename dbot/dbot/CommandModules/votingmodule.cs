@@ -60,7 +60,7 @@ namespace dbot.CommandModules
                 {
                     sb.AppendLine($"{res.movie.movName}: {res.votes}");
                 }
-                var winner = results.OrderByDescending(x => x.votes).First();
+                var winner = _votingService.getWinner(results);
                 sb.AppendLine($"The winner is: {winner.movie.movName}");
                 await ReplyAsync(sb.ToString());
                 var movie = await _omdbService.GetMovieByTitle(winner.movie.movName);

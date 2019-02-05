@@ -1,5 +1,6 @@
 
 using Discord;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,16 @@ namespace dbot.Services
                                                votes = _votes.Values.Where(x => x == nomination.id).Count() });
             }
             return results;
+        }
+
+        public VotingResult getWinner(IEnumerable<VotingResult> results)
+        {
+            var winningVote = results.Select(x => x.votes).Max();
+            var winners = results.Where(x => x.votes == winningVote);
+            var rng = new Random();
+            var toSkip = rng.Next(0, winners.Count());
+            
+            return winners.Skip(toSkip).Take(1).Single();
         }
 
         public void clearResults()
