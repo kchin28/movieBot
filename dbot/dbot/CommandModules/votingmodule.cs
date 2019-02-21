@@ -114,6 +114,24 @@ namespace dbot.CommandModules
             }
         }
 
+        [Command("random")]
+        public async Task VoteRandom(params int[] candidates)
+        {
+
+        }
+
+        [Command("random")]
+        public async Task VoteRandom()
+        {
+
+        }
+
+        [Command("random")]
+        public async Task VoteRandom(params string[] candidates)
+        {
+
+        }
+
 
     }
 }   
