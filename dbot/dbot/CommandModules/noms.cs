@@ -24,7 +24,7 @@ namespace dbot.CommandModules
         }
 
         [Command]
-        public async Task addNominationASync(string name)
+        public async Task addNominationASync([Remainder]string name)
         {
             if (!_votingService.votingOpen())
             {

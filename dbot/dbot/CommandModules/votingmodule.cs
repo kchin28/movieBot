@@ -98,13 +98,28 @@ namespace dbot.CommandModules
 
         [Command]
         [Priority(1)]
-        public async Task Default(string mov)
+        public async Task Default([Remainder]string mov)
         {
+
+           // String mov = stringArray.ToString();
             if (_votingService.votingOpen())
             {
                 var noms = _nominationsService.getNominations();
-                var myNomObj = noms.FirstOrDefault(x => x.movName.Equals(mov));
-                if (!noms.Any()) { await ReplyAsync($"Unexpected vote for {mov}, please try again!"); }
+                NomObj myNomObj=null;
+                try
+                {
+                    myNomObj = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));
+                }
+                catch 
+                {
+                    await ReplyAsync($"Unexpected vote for {mov}, please try again!");
+                }
+
+
+                if (!noms.Any())    
+                {
+                    await ReplyAsync($"Unexpected vote for {mov}, please try again!");
+                }
                 else 
                 {
                     _votingService.vote(Context.User, myNomObj.id);
