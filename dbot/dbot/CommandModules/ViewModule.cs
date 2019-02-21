@@ -6,6 +6,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using dbot.Services;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace dbot.CommandModules
 {
@@ -26,7 +27,7 @@ namespace dbot.CommandModules
         [Command("nominations")]
         public async Task viewNom() {
             var noms = _nominationsService.getNominations();
-            if (noms.Equals(null)) { return; }
+            if (!noms.Any()) { return; }
             StringBuilder sb = new StringBuilder();
             foreach (var n in noms) {
                 sb.AppendLine($"{n.id}. {n.movName}");

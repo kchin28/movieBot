@@ -104,7 +104,7 @@ namespace dbot.CommandModules
             {
                 var noms = _nominationsService.getNominations();
                 var myNomObj = noms.FirstOrDefault(x => x.movName.Equals(mov));
-                if (myNomObj == null) { await ReplyAsync($"Unexpected vote for {mov}, please try again!"); }
+                if (!noms.Any()) { await ReplyAsync($"Unexpected vote for {mov}, please try again!"); }
                 else 
                 {
                     _votingService.vote(Context.User, myNomObj.id);
