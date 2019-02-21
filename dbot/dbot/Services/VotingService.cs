@@ -25,7 +25,7 @@ namespace dbot.Services
             _votes = new ConcurrentDictionary<IUser, int>();
         }
 
-        public void vote(IUser user, int movieId)
+        public void Vote(IUser user, int movieId)
         {
             //Always update with newest movieId
             _votes.AddOrUpdate(user, movieId,
@@ -35,22 +35,22 @@ namespace dbot.Services
                 });
         }
 
-        public bool votingOpen()
+        public bool VotingOpen()
         {
             return _votingOpen;
         }
 
-        public void startVote()
+        public void StartVote()
         {
             _votingOpen = true;
         }
 
-        public void endVote()
+        public void EndVote()
         {
             _votingOpen = false;
         }
 
-        public IEnumerable<VotingResult> getResults(IEnumerable<NomObj> nominations)
+        public IEnumerable<VotingResult> GetResults(IEnumerable<NomObj> nominations)
         {
             var results = new List<VotingResult>();
 
@@ -63,7 +63,7 @@ namespace dbot.Services
             return results;
         }
 
-        public VotingResult getWinner(IEnumerable<VotingResult> results)
+        public VotingResult GetWinner(IEnumerable<VotingResult> results)
         {
             var winningVote = results.Select(x => x.votes).Max();
             var winners = results.Where(x => x.votes == winningVote);
@@ -73,7 +73,13 @@ namespace dbot.Services
             return winners.Skip(toSkip).Take(1).Single();
         }
 
-        public void clearResults()
+        public void VoteForRandomCandidate(IUser user, IEnumerable<NomObj> nominations)
+        {
+            var rng = new Random();
+            Vote(user, nominations.Skip(rng.Next(0, nominations.Count())).Single().id);
+        }
+
+        public void ClearResults()
         {
             _votes.Clear();
         }
