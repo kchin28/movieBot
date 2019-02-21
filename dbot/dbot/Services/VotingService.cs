@@ -76,7 +76,9 @@ namespace dbot.Services
         public void VoteForRandomCandidate(IUser user, IEnumerable<NomObj> nominations)
         {
             var rng = new Random();
-            Vote(user, nominations.Skip(rng.Next(0, nominations.Count())).Single().id);
+            var winner = nominations.Skip(rng.Next(0, nominations.Count()))
+                                    .Take(1).Single().id;
+            Vote(user, winner);
         }
 
         public void ClearResults()

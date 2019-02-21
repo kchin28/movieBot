@@ -133,14 +133,32 @@ namespace dbot.CommandModules
         [Priority(3)]
         public async Task VoteRandom(params int[] candidates)
         {
-
+            if (_votingService.VotingOpen())
+            {
+                var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.id));
+                _votingService.VoteForRandomCandidate(Context.User, nominations);
+                await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
         }
 
         [Command("random")]
-        [Priority(1)]
+        [Priority(2)]
         public async Task VoteRandom(params string[] candidates)
         {
-
+            if (_votingService.VotingOpen())
+            {
+                var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.movName));
+                _votingService.VoteForRandomCandidate(Context.User, nominations);
+                await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
         }
 
     }
