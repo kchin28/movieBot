@@ -24,6 +24,7 @@ namespace dbot.CommandModules
         }
 
         [Command("start")]
+        [Priority(3)]
         public async Task Start()
         {
             if (!_votingService.votingOpen())
@@ -74,6 +75,7 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Priority(2)]
         public async Task Default(int movId) 
         {
             if (_votingService.votingOpen())
@@ -86,6 +88,27 @@ namespace dbot.CommandModules
                 else
                 {
                     await ReplyAsync($"Unexpected vote for {movId}, please try again!");
+                }
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
+        }
+
+        [Command]
+        [Priority(1)]
+        public async Task Default(string mov)
+        {
+            if (_votingService.votingOpen())
+            {
+                var noms = _nominationsService.getNominations();
+                var myNomObj = noms.FirstOrDefault(x => x.movName.Equals(mov));
+                if (myNomObj == null) { await ReplyAsync($"Unexpected vote for {mov}, please try again!"); }
+                else 
+                {
+                    _votingService.vote(Context.User, myNomObj.id);
+                    await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
             }
             else
