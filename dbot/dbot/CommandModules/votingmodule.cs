@@ -136,8 +136,14 @@ namespace dbot.CommandModules
             if (_votingService.VotingOpen())
             {
                 var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.id));
-                _votingService.VoteForRandomCandidate(Context.User, nominations);
-                await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+                if(_votingService.VoteForRandomCandidate(Context.User, nominations))
+                {
+                    await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+                }
+                else
+                {
+                    await ReplyAsync($"Could not find any valid choices, please try again!");
+                }
             }
             else
             {
@@ -152,8 +158,14 @@ namespace dbot.CommandModules
             if (_votingService.VotingOpen())
             {
                 var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.movName));
-                _votingService.VoteForRandomCandidate(Context.User, nominations);
-                await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+                if(_votingService.VoteForRandomCandidate(Context.User, nominations))
+                {
+                    await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+                }
+                else
+                {
+                    await ReplyAsync($"Could not find any valid choices, please try again!");
+                }
             }
             else
             {

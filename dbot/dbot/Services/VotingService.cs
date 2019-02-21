@@ -73,12 +73,17 @@ namespace dbot.Services
             return winners.Skip(toSkip).Take(1).Single();
         }
 
-        public void VoteForRandomCandidate(IUser user, IEnumerable<NomObj> nominations)
+        public bool VoteForRandomCandidate(IUser user, IEnumerable<NomObj> nominations)
         {
-            var rng = new Random();
-            var winner = nominations.Skip(rng.Next(0, nominations.Count()))
-                                    .Take(1).Single().id;
-            Vote(user, winner);
+            if(nominations.Any())
+            {
+                var rng = new Random();
+                var winner = nominations.Skip(rng.Next(0, nominations.Count()))
+                                        .Take(1).Single().id;
+                Vote(user, winner);
+                return true;
+            }
+            return false;
         }
 
         public void ClearResults()
