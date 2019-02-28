@@ -16,8 +16,6 @@ namespace dbot.CommandModules
         private readonly OmdbService _omdbService;
         private readonly VotingService _votingService;
 
-
-
         public noms(NominationsService ns, OmdbService os, VotingService vs)
         {
             _nominationsService = ns;
@@ -26,7 +24,7 @@ namespace dbot.CommandModules
         }
 
         [Command]
-        public async Task addNominationASync(string name)
+        public async Task addNominationASync([Remainder]string name)
         {
             if (!_votingService.votingOpen())
             {
@@ -40,18 +38,16 @@ namespace dbot.CommandModules
                     await ReplyAsync(movie.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination
-                    _nominationsService.addNom(Context.User, name, movie.imdbID);
+                    _nominationsService.addNom(Context.User, movie.Title, movie.imdbID);
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
             else {
                 await ReplyAsync("Cannot nominate during open voting session");
-
-            }
-            
+            }      
         }
 
-        [Command]
+        [Command] 
         public async Task addNominationWithYearASync(string name, int year) {
             if (!_votingService.votingOpen())
             {
@@ -66,8 +62,8 @@ namespace dbot.CommandModules
                 {
                     await ReplyAsync(movie.ToString());
 
-                    //if this isnt the right one, specify the year and change the nomination
-                    _nominationsService.addNom(Context.User, name, movie.imdbID);
+                    //if this isnt the right one, specify the year and change the nomination obj
+                    _nominationsService.addNom(Context.User, movie.Title, movie.imdbID);
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
@@ -81,7 +77,6 @@ namespace dbot.CommandModules
         public async Task nomByID(string id) {
             if (!_votingService.votingOpen())
             {
-
                 var mov = await _omdbService.GetItemByID(id);
 
                 if (mov.Title.Equals(null))
@@ -96,7 +91,6 @@ namespace dbot.CommandModules
                     _nominationsService.addNom(Context.User, mov.Title, mov.imdbID);
                     await ReplyAsync("Thanks for nominating!");
                 }
-
             }
             else {
                 await ReplyAsync("cannot nominate during open voting session");
