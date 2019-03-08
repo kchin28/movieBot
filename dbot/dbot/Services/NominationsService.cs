@@ -48,7 +48,7 @@ namespace dbot.Services
 
         public IEnumerable<NomObj> getNominations()
         {
-            return currNoms.Select(x => x.Value);
+            return currNoms.Select(x => x.Value).OrderBy(x => x.id);
         }
 
         public void clearNominations()
