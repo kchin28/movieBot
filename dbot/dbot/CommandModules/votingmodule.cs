@@ -47,6 +47,7 @@ namespace dbot.CommandModules
         }
 
         [Command("end")]
+        [Priority(3)]
         public async Task End()
         {
             if (_votingService.VotingOpen())
@@ -67,6 +68,27 @@ namespace dbot.CommandModules
                 var movie = await _omdbService.GetMovieByTitle(winner.movie.movName);
                 await ReplyAsync(movie.ToString());
                 
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
+        }
+
+        [Command("results")]
+        [Priority(2)]
+        public async Task Results()
+        {
+            var results = _votingService.GetResults(_nominationsService.getNominations());
+            var sb = new StringBuilder();
+
+            if (_votingService.VotingOpen())
+            {
+                foreach (var res in results)
+                {
+                    sb.AppendLine($"{res.movie.movName} : {res.votes}");
+                }
+                await ReplyAsync(sb.ToString());
             }
             else
             {
@@ -102,7 +124,7 @@ namespace dbot.CommandModules
         {
 
            // String mov = stringArray.ToString();
-            if (_votingService.votingOpen())
+            if (_votingService.VotingOpen())
             {
                 var noms = _nominationsService.getNominations();
                 NomObj myNomObj=null;
@@ -122,29 +144,9 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    _votingService.vote(Context.User, myNomObj.id);
+                    _votingService.Vote(Context.User, myNomObj.id);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
-            }
-            else
-            {
-                await ReplyAsync($"There is no vote in progress");
-            }
-        }
-
-        [Command("results")]
-        public async Task Results()
-        {
-            var results = _votingService.GetResults(_nominationsService.getNominations());
-            var sb = new StringBuilder();
-
-            if (_votingService.VotingOpen())
-            {
-                foreach (var res in results)
-                {
-                    sb.AppendLine($"{res.movie.movName} : {res.votes}");
-                }
-                await ReplyAsync(sb.ToString());
             }
             else
             {
