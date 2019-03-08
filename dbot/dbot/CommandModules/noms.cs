@@ -26,7 +26,7 @@ namespace dbot.CommandModules
         [Command]
         public async Task addNominationASync([Remainder]string name)
         {
-            if (!_votingService.votingOpen())
+            if (!_votingService.VotingOpen())
             {
                 var movie = await _omdbService.GetMovieByTitle(name);
 
@@ -49,7 +49,7 @@ namespace dbot.CommandModules
 
         [Command] 
         public async Task addNominationWithYearASync(string name, int year) {
-            if (!_votingService.votingOpen())
+            if (!_votingService.VotingOpen())
             {
 
                 var movie = await _omdbService.GetMovieByTitleYear(name, year);
@@ -75,7 +75,7 @@ namespace dbot.CommandModules
         [Command("id")]
         [Priority(1)]
         public async Task nomByID(string id) {
-            if (!_votingService.votingOpen())
+            if (!_votingService.VotingOpen())
             {
                 var mov = await _omdbService.GetItemByID(id);
 

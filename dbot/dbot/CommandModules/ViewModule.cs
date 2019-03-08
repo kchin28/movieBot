@@ -38,7 +38,7 @@ namespace dbot.CommandModules
         [Command("votes")]
         public async Task viewVotes()
         {
-            var votes = _votingService.getResults(_nominationsService.getNominations());
+            var votes = _votingService.GetResults(_nominationsService.getNominations());
             StringBuilder sb = new StringBuilder();
             foreach (var v in votes)
             {

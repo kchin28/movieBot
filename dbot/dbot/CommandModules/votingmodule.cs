@@ -27,11 +27,11 @@ namespace dbot.CommandModules
         [Priority(3)]
         public async Task Start()
         {
-            if (!_votingService.votingOpen())
+            if (!_votingService.VotingOpen())
             {
                 if (_nominationsService.getNominations().Any())
                 {
-                    _votingService.startVote();
+                    _votingService.StartVote();
                     await ReplyAsync("Voting has opened!");
                     await ReplyAsync(_nominationsService.viewNominationsWithId());
                 }
@@ -47,13 +47,14 @@ namespace dbot.CommandModules
         }
 
         [Command("end")]
+        [Priority(3)]
         public async Task End()
         {
-            if (_votingService.votingOpen())
+            if (_votingService.VotingOpen())
             {
-                _votingService.endVote();
-                var results = _votingService.getResults(_nominationsService.getNominations());
-                _votingService.clearResults();
+                _votingService.EndVote();
+                var results = _votingService.GetResults(_nominationsService.getNominations());
+                _votingService.ClearResults();
                 _nominationsService.clearNominations();
                 var sb = new StringBuilder();
                 sb.AppendLine("Voting has ended! The results: ");
@@ -61,7 +62,7 @@ namespace dbot.CommandModules
                 {
                     sb.AppendLine($"{res.movie.movName}: {res.votes}");
                 }
-                var winner = _votingService.getWinner(results);
+                var winner = _votingService.GetWinner(results);
                 sb.AppendLine($"The winner is: {winner.movie.movName}");
                 await ReplyAsync(sb.ToString());
                 var movie = await _omdbService.GetMovieByTitle(winner.movie.movName);
@@ -74,15 +75,36 @@ namespace dbot.CommandModules
             }
         }
 
+        [Command("results")]
+        [Priority(2)]
+        public async Task Results()
+        {
+            var results = _votingService.GetResults(_nominationsService.getNominations());
+            var sb = new StringBuilder();
+
+            if (_votingService.VotingOpen())
+            {
+                foreach (var res in results)
+                {
+                    sb.AppendLine($"{res.movie.movName} : {res.votes}");
+                }
+                await ReplyAsync(sb.ToString());
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
+        }
+
         [Command]
         [Priority(2)]
         public async Task Default(int movId) 
         {
-            if (_votingService.votingOpen())
+            if (_votingService.VotingOpen())
             {
                 if (_nominationsService.getNominations().Select(x => x.id).Contains(movId))
                 {
-                    _votingService.vote(Context.User, movId);
+                    _votingService.Vote(Context.User, movId);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
                 else
@@ -102,7 +124,7 @@ namespace dbot.CommandModules
         {
 
            // String mov = stringArray.ToString();
-            if (_votingService.votingOpen())
+            if (_votingService.VotingOpen())
             {
                 var noms = _nominationsService.getNominations();
                 NomObj myNomObj=null;
@@ -122,7 +144,7 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    _votingService.vote(Context.User, myNomObj.id);
+                    _votingService.Vote(Context.User, myNomObj.id);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
             }
@@ -132,19 +154,14 @@ namespace dbot.CommandModules
             }
         }
 
-        [Command("results")]
-        public async Task Results()
+        [Command("random")]
+        [Priority(3)]
+        public async Task VoteRandom()
         {
-            var results = _votingService.getResults(_nominationsService.getNominations());
-            var sb = new StringBuilder();
-
-            if (_votingService.votingOpen())
+            if (_votingService.VotingOpen())
             {
-                foreach (var res in results)
-                {
-                    sb.AppendLine($"{res.movie.movName} : {res.votes}");
-                }
-                await ReplyAsync(sb.ToString());
+                _votingService.VoteForRandomCandidate(Context.User, _nominationsService.getNominations());
+                await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
             }
             else
             {
@@ -152,6 +169,49 @@ namespace dbot.CommandModules
             }
         }
 
+        [Command("random")]
+        [Priority(3)]
+        public async Task VoteRandom(params int[] candidates)
+        {
+            if (_votingService.VotingOpen())
+            {
+                var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.id));
+                if(_votingService.VoteForRandomCandidate(Context.User, nominations))
+                {
+                    await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+                }
+                else
+                {
+                    await ReplyAsync($"Could not find any valid choices, please try again!");
+                }
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
+        }
+
+        [Command("random")]
+        [Priority(2)]
+        public async Task VoteRandom(params string[] candidates)
+        {
+            if (_votingService.VotingOpen())
+            {
+                var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.movName));
+                if(_votingService.VoteForRandomCandidate(Context.User, nominations))
+                {
+                    await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
+                }
+                else
+                {
+                    await ReplyAsync($"Could not find any valid choices, please try again!");
+                }
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
+        }
 
     }
 }   
