@@ -14,7 +14,7 @@ namespace dbot.Services
         {
 
                 //only keeps last nomination
-                var newNom = new NomObj(title, currNoms.Count+1,imdbID);
+                var newNom = new NomObj(title, getNextId(),imdbID);
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
@@ -64,14 +64,30 @@ namespace dbot.Services
 
         public void DeleteNominationForUser(IUser user)
         {
-            return;
+            NomObj nomination;
+            if(currNoms.TryRemove(user, out nomination))
+            {
+                FixNominationIds();
+            }
         }
 
         private void FixNominationIds()
         {
-
+            //Grab the entire nominations list
+            var nominations = currNoms.ToArray();
+            //Re-number from 1 to n of remaining nominations
+            int id = 1;
+            foreach(var nomination in nominations)
+            {
+                nomination.Value.id = id++;
+                currNoms.AddOrUpdate(nomination.Key, nomination.Value, (k, v) => { return nomination.Value; });
+            }
         }
 
+        private int getNextId()
+        {
+            return currNoms.Count() + 1;
+        }
         //cannot delete nominations only replace bc the id's won't be in order
         //no verification on omdb
     }
