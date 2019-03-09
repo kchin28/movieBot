@@ -24,7 +24,7 @@ namespace dbot.CommandModules
         }
 
         [Command]
-        public async Task AddNominationinationASync([Remainder]string name)
+        public async Task AddNominationASync([Remainder]string name)
         {
             if (!_votingService.VotingOpen())
             {
@@ -48,7 +48,7 @@ namespace dbot.CommandModules
         }
 
         [Command] 
-        public async Task AddNominationinationWithYearASync(string name, int year) {
+        public async Task AddNominationWithYearASync(string name, int year) {
             if (!_votingService.VotingOpen())
             {
 
