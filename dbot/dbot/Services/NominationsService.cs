@@ -10,7 +10,8 @@ namespace dbot.Services
     {
         private static ConcurrentDictionary<IUser, NomObj> currNoms = new ConcurrentDictionary<IUser, NomObj>();
 
-        public void addNom(IUser userName,string title, string imdbID) { //no omdb verification currently 
+        public void AddNomination(IUser userName,string title, string imdbID) 
+        {
 
                 //only keeps last nomination
                 var newNom = new NomObj(title, currNoms.Count+1,imdbID);
@@ -54,6 +55,21 @@ namespace dbot.Services
         public void clearNominations()
         {
             currNoms.Clear();
+        }
+
+        public bool UserHasNomination(IUser user, out NomObj nomination)
+        {
+            return currNoms.TryGetValue(user, out nomination);
+        }
+
+        public void DeleteNominationForUser(IUser user)
+        {
+            return;
+        }
+
+        private void FixNominationIds()
+        {
+
         }
 
         //cannot delete nominations only replace bc the id's won't be in order

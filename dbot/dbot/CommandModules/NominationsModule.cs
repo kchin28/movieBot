@@ -24,7 +24,7 @@ namespace dbot.CommandModules
         }
 
         [Command]
-        public async Task addNominationASync([Remainder]string name)
+        public async Task AddNominationinationASync([Remainder]string name)
         {
             if (!_votingService.VotingOpen())
             {
@@ -38,7 +38,7 @@ namespace dbot.CommandModules
                     await ReplyAsync(movie.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination
-                    _nominationsService.addNom(Context.User, movie.Title, movie.imdbID);
+                    _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
@@ -48,7 +48,7 @@ namespace dbot.CommandModules
         }
 
         [Command] 
-        public async Task addNominationWithYearASync(string name, int year) {
+        public async Task AddNominationinationWithYearASync(string name, int year) {
             if (!_votingService.VotingOpen())
             {
 
@@ -63,7 +63,7 @@ namespace dbot.CommandModules
                     await ReplyAsync(movie.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination obj
-                    _nominationsService.addNom(Context.User, movie.Title, movie.imdbID);
+                    _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
@@ -88,12 +88,12 @@ namespace dbot.CommandModules
                     await ReplyAsync(mov.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination
-                    _nominationsService.addNom(Context.User, mov.Title, mov.imdbID);
+                    _nominationsService.AddNomination(Context.User, mov.Title, mov.imdbID);
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
             else {
-                await ReplyAsync("cannot nominate during open voting session");
+                await ReplyAsync("Cannot nominate during open voting session");
             }
         }
 
@@ -103,6 +103,22 @@ namespace dbot.CommandModules
             string result = _nominationsService.viewNominations();
             await ReplyAsync(result);
 
+        }
+
+        [Command("delete")]
+        [Priority(2)]
+        public async Task DeleteNominationForUser() 
+        {
+            NomObj nomination;
+            if(_nominationsService.UserHasNomination(Context.User, out nomination))
+            {
+                _nominationsService.DeleteNominationForUser(Context.User);
+                await ReplyAsync($"Deleted {nomination.movName} from nominations!");
+            }
+            else
+            {
+                await ReplyAsync("You do not have an open nomination!");
+            }
         }
 
     }
