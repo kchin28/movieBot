@@ -122,15 +122,13 @@ namespace dbot.CommandModules
         [Priority(1)]
         public async Task Default([Remainder]string mov)
         {
-
-           // String mov = stringArray.ToString();
             if (_votingService.VotingOpen())
             {
                 var noms = _nominationsService.getNominations();
-                NomObj myNomObj=null;
+                Nomination nomination = null;
                 try
                 {
-                    myNomObj = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));
+                    nomination = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));
                 }
                 catch 
                 {
@@ -144,7 +142,7 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    _votingService.Vote(Context.User, myNomObj.id);
+                    _votingService.Vote(Context.User, nomination.id);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
             }

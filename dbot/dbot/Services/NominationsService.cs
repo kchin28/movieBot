@@ -8,12 +8,13 @@ namespace dbot.Services
 {
     public class NominationsService
     {
-        private static ConcurrentDictionary<IUser, NomObj> currNoms = new ConcurrentDictionary<IUser, NomObj>();
+        private static ConcurrentDictionary<IUser, Nomination> currNoms = new ConcurrentDictionary<IUser, Nomination>();
 
-        public void addNom(IUser userName,string title, string imdbID) { //no omdb verification currently 
+        public void AddNomination(IUser userName,string title, string imdbID) 
+        {
 
                 //only keeps last nomination
-                var newNom = new NomObj(title, currNoms.Count+1,imdbID);
+                var newNom = new Nomination(title, getNextId(),imdbID);
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
@@ -46,7 +47,7 @@ namespace dbot.Services
             return sb.ToString();
         }
 
-        public IEnumerable<NomObj> getNominations()
+        public IEnumerable<Nomination> getNominations()
         {
             return currNoms.Select(x => x.Value).OrderBy(x => x.id);
         }
@@ -56,16 +57,49 @@ namespace dbot.Services
             currNoms.Clear();
         }
 
+        public bool UserHasNomination(IUser user, out Nomination nomination)
+        {
+            return currNoms.TryGetValue(user, out nomination);
+        }
+
+        public void DeleteNominationForUser(IUser user)
+        {
+            Nomination nomination;
+            if(currNoms.TryRemove(user, out nomination))
+            {
+                FixNominationIds();
+            }
+        }
+
+        private void FixNominationIds()
+        {
+            //Grab the entire nominations list
+            var nominations = currNoms.ToArray();
+            //Re-number from 1 to n of remaining nominations
+            int id = 1;
+            foreach(var nomination in nominations)
+            {
+                nomination.Value.id = id++;
+                currNoms.AddOrUpdate(nomination.Key, nomination.Value, (k, v) => { return nomination.Value; });
+            }
+        }
+
+        private int getNextId()
+        {
+            return currNoms.Count() + 1;
+        }
         //cannot delete nominations only replace bc the id's won't be in order
         //no verification on omdb
     }
 
-    public class NomObj {
+    public class Nomination 
+    {
         public string movName;
         public int id;
         public string imdb;
 
-        public NomObj(string movie, int num, string imdbID) {
+        public Nomination(string movie, int num, string imdbID) 
+        {
             movName = movie;
             id = num;
             imdb = imdbID;

@@ -9,7 +9,7 @@ namespace dbot.Services
 {
     public class VotingResult
     {
-        public NomObj movie { get; set; }
+        public Nomination movie { get; set; }
         public int votes { get; set; }
     }
 
@@ -50,7 +50,7 @@ namespace dbot.Services
             _votingOpen = false;
         }
 
-        public IEnumerable<VotingResult> GetResults(IEnumerable<NomObj> nominations)
+        public IEnumerable<VotingResult> GetResults(IEnumerable<Nomination> nominations)
         {
             var results = new List<VotingResult>();
 
@@ -73,7 +73,7 @@ namespace dbot.Services
             return winners.Skip(toSkip).Take(1).Single();
         }
 
-        public bool VoteForRandomCandidate(IUser user, IEnumerable<NomObj> nominations)
+        public bool VoteForRandomCandidate(IUser user, IEnumerable<Nomination> nominations)
         {
             if(nominations.Any())
             {
