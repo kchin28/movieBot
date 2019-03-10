@@ -10,13 +10,13 @@ using Discord.WebSocket;
 namespace dbot.CommandModules
 {
     [Group("nominate")]
-    public class noms : ModuleBase
+    public class NominationsModule : ModuleBase
     {
         private readonly NominationsService _nominationsService;
         private readonly OmdbService _omdbService;
         private readonly VotingService _votingService;
 
-        public noms(NominationsService ns, OmdbService os, VotingService vs)
+        public NominationsModule(NominationsService ns, OmdbService os, VotingService vs)
         {
             _nominationsService = ns;
             _omdbService = os;
@@ -34,7 +34,8 @@ namespace dbot.CommandModules
                 {
                     await ReplyAsync("Could not find this movie.");
                 }
-                else {
+                else 
+                {
                     await ReplyAsync(movie.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination
@@ -42,13 +43,15 @@ namespace dbot.CommandModules
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
-            else {
+            else 
+            {
                 await ReplyAsync("Cannot nominate during open voting session");
             }      
         }
 
         [Command] 
-        public async Task AddNominationWithYearASync(string name, int year) {
+        public async Task AddNominationWithYearASync(string name, int year) 
+        {
             if (!_votingService.VotingOpen())
             {
 
@@ -67,14 +70,16 @@ namespace dbot.CommandModules
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
-            else {
+            else 
+            {
                 await ReplyAsync("Cannot nominate during open voting session");
             }
         }
 
         [Command("id")]
         [Priority(1)]
-        public async Task nomByID(string id) {
+        public async Task NominateById(string id) 
+        {
             if (!_votingService.VotingOpen())
             {
                 var mov = await _omdbService.GetItemByID(id);
@@ -92,14 +97,16 @@ namespace dbot.CommandModules
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
-            else {
+            else 
+            {
                 await ReplyAsync("Cannot nominate during open voting session");
             }
         }
 
         [Command("view")]
         [Priority(2)]
-        public async Task viewNominationsAsynch() {
+        public async Task ViewNominationsAsync() 
+        {
             string result = _nominationsService.viewNominations();
             await ReplyAsync(result);
 
