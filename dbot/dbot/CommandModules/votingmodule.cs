@@ -125,7 +125,7 @@ namespace dbot.CommandModules
             if (_votingService.VotingOpen())
             {
                 var noms = _nominationsService.getNominations();
-                NomObj nomination = null;
+                Nomination nomination = null;
                 try
                 {
                     nomination = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));

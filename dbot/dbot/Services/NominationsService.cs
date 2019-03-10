@@ -8,13 +8,13 @@ namespace dbot.Services
 {
     public class NominationsService
     {
-        private static ConcurrentDictionary<IUser, NomObj> currNoms = new ConcurrentDictionary<IUser, NomObj>();
+        private static ConcurrentDictionary<IUser, Nomination> currNoms = new ConcurrentDictionary<IUser, Nomination>();
 
         public void AddNomination(IUser userName,string title, string imdbID) 
         {
 
                 //only keeps last nomination
-                var newNom = new NomObj(title, getNextId(),imdbID);
+                var newNom = new Nomination(title, getNextId(),imdbID);
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
@@ -47,7 +47,7 @@ namespace dbot.Services
             return sb.ToString();
         }
 
-        public IEnumerable<NomObj> getNominations()
+        public IEnumerable<Nomination> getNominations()
         {
             return currNoms.Select(x => x.Value).OrderBy(x => x.id);
         }
@@ -57,14 +57,14 @@ namespace dbot.Services
             currNoms.Clear();
         }
 
-        public bool UserHasNomination(IUser user, out NomObj nomination)
+        public bool UserHasNomination(IUser user, out Nomination nomination)
         {
             return currNoms.TryGetValue(user, out nomination);
         }
 
         public void DeleteNominationForUser(IUser user)
         {
-            NomObj nomination;
+            Nomination nomination;
             if(currNoms.TryRemove(user, out nomination))
             {
                 FixNominationIds();
@@ -92,12 +92,14 @@ namespace dbot.Services
         //no verification on omdb
     }
 
-    public class NomObj {
+    public class Nomination 
+    {
         public string movName;
         public int id;
         public string imdb;
 
-        public NomObj(string movie, int num, string imdbID) {
+        public Nomination(string movie, int num, string imdbID) 
+        {
             movName = movie;
             id = num;
             imdb = imdbID;

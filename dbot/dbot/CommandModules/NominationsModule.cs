@@ -116,7 +116,7 @@ namespace dbot.CommandModules
         [Priority(2)]
         public async Task DeleteNominationForUser() 
         {
-            NomObj nomination;
+            Nomination nomination;
             if(_nominationsService.UserHasNomination(Context.User, out nomination))
             {
                 _nominationsService.DeleteNominationForUser(Context.User);
