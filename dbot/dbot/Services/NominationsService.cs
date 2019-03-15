@@ -24,7 +24,7 @@ namespace dbot.Services
         }
 
         public string viewNominations() {
-            var current = currNoms.Values;
+            var current = getNominations();
             var movies = current.Select(x => x.movName);
             var sb = new StringBuilder();
 
@@ -36,7 +36,7 @@ namespace dbot.Services
 
         public string viewNominationsWithId()
         {
-            var nominations = currNoms.Values;
+            var nominations = getNominations();
 
             var sb = new StringBuilder();
 
