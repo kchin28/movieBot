@@ -23,6 +23,12 @@ namespace dbot.Services
                     });
         }
 
+        public bool IsNominated(string imdbId)
+        {
+            var nominations = getNominations();
+            return nominations.Where(n => n.imdb == imdbId).Any();
+        }
+
         public string viewNominations() {
             var current = getNominations();
             var movies = current.Select(x => x.movName);
