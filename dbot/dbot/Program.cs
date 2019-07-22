@@ -61,7 +61,10 @@ namespace dbot
             var context = new CommandContext(client, message);
             var result = await commands.ExecuteAsync(context, argPos, services);
             if (!result.IsSuccess)
+            {
+                Console.WriteLine($"Command failed: {result.ErrorReason}; {result.Error} (Message: {messageParam})");
                 await context.Channel.SendMessageAsync(result.ErrorReason);
+            }
         }
     }
 }

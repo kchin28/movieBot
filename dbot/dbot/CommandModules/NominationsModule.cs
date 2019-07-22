@@ -26,16 +26,19 @@ namespace dbot.CommandModules
         [Command]
         public async Task AddNominationASync([Remainder]string name)
         {
+            Console.WriteLine($"Got nomination request for \"{name}\"");
             if (!_votingService.VotingOpen())
             {
                 var movie = await _omdbService.GetMovieByTitle(name);
 
                 if (movie.Title.Equals(null))
                 {
+                    Console.WriteLine($"Failed to find nominated movie \"{name}\"");
                     await ReplyAsync("Could not find this movie.");
                 }
-                else 
+                else
                 {
+                    Console.WriteLine($"Adding nominated movie \"{name}\"");
                     await ReplyAsync(movie.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination
@@ -43,15 +46,16 @@ namespace dbot.CommandModules
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
-            else 
+            else
             {
                 await ReplyAsync("Cannot nominate during open voting session");
             }      
         }
 
         [Command] 
-        public async Task AddNominationWithYearASync(string name, int year) 
+        public async Task AddNominationWithYearASync(string name, int year)
         {
+            Console.WriteLine($"Got nomination request for \"{name}\", {year}");
             if (!_votingService.VotingOpen())
             {
 
@@ -59,10 +63,12 @@ namespace dbot.CommandModules
 
                 if (movie.Title.Equals(null))
                 {
+                    Console.WriteLine($"Failed to find nominated movie \"{name}\", {year}");
                     await ReplyAsync("Could not find this movie.");
                 }
                 else
                 {
+                    Console.WriteLine($"Adding nominated movie \"{name}\"");
                     await ReplyAsync(movie.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination obj
@@ -70,7 +76,7 @@ namespace dbot.CommandModules
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
-            else 
+            else
             {
                 await ReplyAsync("Cannot nominate during open voting session");
             }
@@ -78,18 +84,21 @@ namespace dbot.CommandModules
 
         [Command("id")]
         [Priority(1)]
-        public async Task NominateById(string id) 
+        public async Task NominateById(string id)
         {
+            Console.WriteLine($"Got nomination request for {id}");
             if (!_votingService.VotingOpen())
             {
                 var mov = await _omdbService.GetItemByID(id);
 
                 if (mov.Title.Equals(null))
                 {
+                    Console.WriteLine($"Failed to find nominated movie {id}");
                     await ReplyAsync("Could not find this movie.");
                 }
                 else
                 {
+                    Console.WriteLine($"Adding nominated movie \"{mov.Title}\"");
                     await ReplyAsync(mov.ToString());
 
                     //if this isnt the right one, specify the year and change the nomination
@@ -97,7 +106,7 @@ namespace dbot.CommandModules
                     await ReplyAsync("Thanks for nominating!");
                 }
             }
-            else 
+            else
             {
                 await ReplyAsync("Cannot nominate during open voting session");
             }
@@ -105,8 +114,9 @@ namespace dbot.CommandModules
 
         [Command("view")]
         [Priority(2)]
-        public async Task ViewNominationsAsync() 
+        public async Task ViewNominationsAsync()
         {
+            Console.WriteLine("Got request to display nominations");
             string result = _nominationsService.viewNominations();
             await ReplyAsync(result);
 
@@ -120,10 +130,12 @@ namespace dbot.CommandModules
             if(_nominationsService.UserHasNomination(Context.User, out nomination))
             {
                 _nominationsService.DeleteNominationForUser(Context.User);
+                Console.WriteLine($"Deleted {nomination.movName} from nominations (nominated by {Context.User})");
                 await ReplyAsync($"Deleted {nomination.movName} from nominations!");
             }
             else
             {
+                Console.WriteLine($"Got delete nomination request from {Context.User}, user has no nomination");
                 await ReplyAsync("You do not have an open nomination!");
             }
         }
