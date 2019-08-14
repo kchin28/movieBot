@@ -32,6 +32,7 @@ namespace dbot.CommandModules
                 if (_nominationsService.getNominations().Any())
                 {
                     _votingService.StartVote();
+                    Console.WriteLine("Starting voting session");
                     await ReplyAsync("Voting has opened!");
                     await ReplyAsync(_nominationsService.viewNominationsWithId());
                 }
@@ -52,6 +53,7 @@ namespace dbot.CommandModules
         {
             if (_votingService.VotingOpen())
             {
+                Console.WriteLine("Ending voting session");
                 _votingService.EndVote();
                 var results = _votingService.GetResults(_nominationsService.getNominations());
                 _votingService.ClearResults();
@@ -79,6 +81,7 @@ namespace dbot.CommandModules
         [Priority(2)]
         public async Task Results()
         {
+            Console.WriteLine("Got request to show vote results");
             var results = _votingService.GetResults(_nominationsService.getNominations());
             var sb = new StringBuilder();
 
@@ -98,8 +101,9 @@ namespace dbot.CommandModules
 
         [Command]
         [Priority(2)]
-        public async Task Default(int movId) 
+        public async Task Default(int movId)
         {
+            Console.WriteLine("Got vote");
             if (_votingService.VotingOpen())
             {
                 if (_nominationsService.getNominations().Select(x => x.id).Contains(movId))
@@ -122,6 +126,7 @@ namespace dbot.CommandModules
         [Priority(1)]
         public async Task Default([Remainder]string mov)
         {
+            Console.WriteLine("Got vote");
             if (_votingService.VotingOpen())
             {
                 var noms = _nominationsService.getNominations();
@@ -156,6 +161,7 @@ namespace dbot.CommandModules
         [Priority(3)]
         public async Task VoteRandom()
         {
+            Console.WriteLine("Got random vote");
             if (_votingService.VotingOpen())
             {
                 _votingService.VoteForRandomCandidate(Context.User, _nominationsService.getNominations());
@@ -171,6 +177,7 @@ namespace dbot.CommandModules
         [Priority(3)]
         public async Task VoteRandom(params int[] candidates)
         {
+            Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
                 var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.id));
@@ -193,6 +200,7 @@ namespace dbot.CommandModules
         [Priority(2)]
         public async Task VoteRandom(params string[] candidates)
         {
+            Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
                 var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.movName));

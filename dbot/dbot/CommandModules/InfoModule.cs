@@ -20,6 +20,7 @@ namespace dbot.CommandModules
         public async Task Default(string movieName)
         {
             var movie = await _omdbService.GetMovieByTitle(movieName);
+            Console.WriteLine($"Retrieved movie info for \"{movieName}\"; id={movie.imdbID}");
             await ReplyAsync(movie.ToString());
         }
 
@@ -27,6 +28,7 @@ namespace dbot.CommandModules
         public async Task Default(string movieName, int year)
         {
             var movie = await _omdbService.GetMovieByTitleYear(movieName, year);
+            Console.WriteLine($"Retrieved movie info for \"{movieName}\", {year}; id={movie.imdbID}");
             await ReplyAsync(movie.ToString());
         }
     }

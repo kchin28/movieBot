@@ -25,7 +25,9 @@ namespace dbot.CommandModules
         }
 
         [Command("nominations")]
-        public async Task viewNom() {
+        public async Task viewNom()
+        {
+            Console.WriteLine("Got view nominations request");
             var noms = _nominationsService.getNominations();
             if (!noms.Any()) { return; }
             StringBuilder sb = new StringBuilder();
@@ -38,6 +40,7 @@ namespace dbot.CommandModules
         [Command("votes")]
         public async Task viewVotes()
         {
+            Console.WriteLine("Got view votes request");
             var votes = _votingService.GetResults(_nominationsService.getNominations());
             StringBuilder sb = new StringBuilder();
             foreach (var v in votes)
