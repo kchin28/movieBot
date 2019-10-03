@@ -86,6 +86,11 @@ namespace dbot.Services
             return false;
         }
 
+        public IEnumerable<IUser> GetVoters()
+        {
+            return _votes.Keys;
+        }
+
         public void ClearResults()
         {
             _votes.Clear();
