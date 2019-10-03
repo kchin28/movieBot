@@ -18,6 +18,7 @@ namespace dbot.Services
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
+                        v.imdb    = newNom.imdb;
                         v.movName = newNom.movName;
                         return v;
                     });

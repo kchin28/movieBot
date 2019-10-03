@@ -116,7 +116,7 @@ namespace dbot.CommandModules
                 {
                     if(!_nominationsService.IsNominated(mov.imdbID))
                     {
-                        Console.WriteLine($"Adding nominated movie \"{name}\"");
+                        Console.WriteLine($"Adding nominated movie \"{id}\"");
                         await ReplyAsync(mov.ToString());
 
                         //if this isnt the right one, specify the year and change the nomination
@@ -125,7 +125,7 @@ namespace dbot.CommandModules
                     }
                     else
                     {
-                        Console.WriteLine($"Attempted to nominate duplicate movie \"{name}\"");
+                        Console.WriteLine($"Attempted to nominate duplicate movie \"{id}\"");
                         await ReplyAsync($"{mov.Title} is already nominated!");
                     }
                 }
