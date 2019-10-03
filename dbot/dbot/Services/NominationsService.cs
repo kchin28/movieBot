@@ -18,9 +18,16 @@ namespace dbot.Services
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
+                        v.imdb    = newNom.imdb;
                         v.movName = newNom.movName;
                         return v;
                     });
+        }
+
+        public bool IsNominated(string imdbId)
+        {
+            var nominations = getNominations();
+            return nominations.Where(n => n.imdb == imdbId).Any();
         }
 
         public string viewNominations() {

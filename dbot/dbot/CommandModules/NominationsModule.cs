@@ -36,14 +36,22 @@ namespace dbot.CommandModules
                     Console.WriteLine($"Failed to find nominated movie \"{name}\"");
                     await ReplyAsync("Could not find this movie.");
                 }
-                else
+                else 
                 {
-                    Console.WriteLine($"Adding nominated movie \"{name}\"");
-                    await ReplyAsync(movie.ToString());
+                    if(!_nominationsService.IsNominated(movie.imdbID))
+                    {
+                        Console.WriteLine($"Adding nominated movie \"{name}\"");
+                        await ReplyAsync(movie.ToString());
 
-                    //if this isnt the right one, specify the year and change the nomination
-                    _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
-                    await ReplyAsync("Thanks for nominating!");
+                        //if this isnt the right one, specify the year and change the nomination
+                        _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
+                        await ReplyAsync("Thanks for nominating!");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Attempted to nominate duplicate movie \"{name}\"");
+                        await ReplyAsync($"{movie.Title} is already nominated!");
+                    }
                 }
             }
             else
@@ -68,12 +76,20 @@ namespace dbot.CommandModules
                 }
                 else
                 {
-                    Console.WriteLine($"Adding nominated movie \"{name}\"");
-                    await ReplyAsync(movie.ToString());
+                    if(!_nominationsService.IsNominated(movie.imdbID))
+                    {
+                        Console.WriteLine($"Adding nominated movie \"{name}\"");
+                        await ReplyAsync(movie.ToString());
 
-                    //if this isnt the right one, specify the year and change the nomination obj
-                    _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
-                    await ReplyAsync("Thanks for nominating!");
+                        //if this isnt the right one, specify the year and change the nomination obj
+                        _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
+                        await ReplyAsync("Thanks for nominating!");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Attempted to nominate duplicate movie \"{name}\"");
+                        await ReplyAsync($"{movie.Title} is already nominated!");
+                    }
                 }
             }
             else
@@ -98,12 +114,20 @@ namespace dbot.CommandModules
                 }
                 else
                 {
-                    Console.WriteLine($"Adding nominated movie \"{mov.Title}\"");
-                    await ReplyAsync(mov.ToString());
+                    if(!_nominationsService.IsNominated(mov.imdbID))
+                    {
+                        Console.WriteLine($"Adding nominated movie \"{id}\"");
+                        await ReplyAsync(mov.ToString());
 
-                    //if this isnt the right one, specify the year and change the nomination
-                    _nominationsService.AddNomination(Context.User, mov.Title, mov.imdbID);
-                    await ReplyAsync("Thanks for nominating!");
+                        //if this isnt the right one, specify the year and change the nomination
+                        _nominationsService.AddNomination(Context.User, mov.Title, mov.imdbID);
+                        await ReplyAsync("Thanks for nominating!");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Attempted to nominate duplicate movie \"{id}\"");
+                        await ReplyAsync($"{mov.Title} is already nominated!");
+                    }
                 }
             }
             else
