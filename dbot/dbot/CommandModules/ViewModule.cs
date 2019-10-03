@@ -50,6 +50,19 @@ namespace dbot.CommandModules
             await ReplyAsync(sb.ToString());
 
         }
+        [Command("voters")]
+        public async Task viewVoters()
+        {
+            Console.WriteLine("Got view voters request");
+            var voters = _votingService.GetVoters();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Current Voters:");
+            foreach (var u in voters)
+            {
+                sb.AppendLine($"{u.Username}");
+            }
+            await ReplyAsync(sb.ToString());
+        }
 
     }
 }
