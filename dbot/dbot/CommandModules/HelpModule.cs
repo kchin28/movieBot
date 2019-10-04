@@ -40,18 +40,26 @@ namespace dbot.CommandModules
         [Remarks("Usage: !help <command>")]
         public async Task Default([Remainder]string commandName)
         {
-            var module = _commandService.Modules.Where(m => m.Name.ToLower() == commandName.ToLower())
-                                                .Single();
-            var sb = new StringBuilder();
-            sb.AppendLine($"Usage information for {module.Name}");
-            foreach(var command in module.Commands)
+            try
             {
-                sb.AppendLine($"**{command.Name}**: {command.Summary}");
-                sb.AppendLine($"{command.Remarks}");
-                //Line separation for readability
-                sb.AppendLine();
+                var module = _commandService.Modules.Where(m => m.Name.ToLower() == commandName.ToLower())
+                                                    .Single();
+
+                var sb = new StringBuilder();
+                sb.AppendLine($"Usage information for {module.Name}");
+                foreach(var command in module.Commands)
+                {
+                    sb.AppendLine($"**{command.Name}**: {command.Summary}");
+                    sb.AppendLine($"{command.Remarks}");
+                    //Line separation for readability
+                    sb.AppendLine();
+                }
+                await ReplyAsync(sb.ToString());
             }
-            await ReplyAsync(sb.ToString());
+            catch
+            {
+                await ReplyAsync("Command not found!");
+            }
         }
     }
 }
