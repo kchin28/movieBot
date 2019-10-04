@@ -46,7 +46,7 @@ namespace dbot.CommandModules
                                                     .Single();
 
                 var sb = new StringBuilder();
-                sb.AppendLine($"Usage information for {module.Name}");
+                sb.AppendLine($"Usage information for **{module.Name}**");
                 foreach(var command in module.Commands)
                 {
                     sb.AppendLine($"**{command.Name}**: {command.Summary}");
