@@ -32,6 +32,7 @@ namespace dbot
             serviceCollection.AddSingleton(new NominationsService());
             serviceCollection.AddSingleton(new VotingService());
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
+            serviceCollection.AddSingleton(commands);
 
             services = serviceCollection.BuildServiceProvider();
             await InstallCommands();
@@ -44,8 +45,11 @@ namespace dbot
 
         public async Task InstallCommands() {
             client.MessageReceived += HandleCommand;
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly(),services);
+            await commands.AddModuleAsync<VotingModule>(services);
+            await commands.AddModuleAsync<NominationsModule>(services);
+            await commands.AddModuleAsync<ViewModule>(services);
             await commands.AddModuleAsync<InfoModule>(services);
+            await commands.AddModuleAsync<HelpModule>(services);
         }
 
         public async Task HandleCommand(SocketMessage messageParam)
