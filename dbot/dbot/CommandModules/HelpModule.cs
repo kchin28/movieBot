@@ -29,7 +29,7 @@ namespace dbot.CommandModules
             sb.AppendLine("Commands:");
             foreach(var module in modules)
             {
-                sb.AppendLine($"{module.Name}: {module.Summary}");
+                sb.AppendLine($"**{module.Name}**: {module.Summary}");
             }
             await ReplyAsync(sb.ToString());
         }
