@@ -19,6 +19,7 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Name("General")]
         [Summary ("Prints all available commands and their description")]
         [Remarks("Usage: !help")]
         public async Task Default()
@@ -32,7 +33,9 @@ namespace dbot.CommandModules
             }
             await ReplyAsync(sb.ToString());
         }
+        
         [Command]
+        [Name("Details")]
         [Summary("Prints information about a specific command")]
         [Remarks("Usage: !help <command>")]
         public async Task Default([Remainder]string commandName)
