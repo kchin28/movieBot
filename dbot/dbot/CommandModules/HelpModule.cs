@@ -20,7 +20,7 @@ namespace dbot.CommandModules
 
         [Command]
         [Name("General")]
-        [Summary ("Prints all available commands and their description")]
+        [Summary ("Prints all available commands and their descriptions")]
         [Remarks("Usage: !help")]
         public async Task Default()
         {
