@@ -11,6 +11,7 @@ using System.Linq;
 namespace dbot.CommandModules
 {
     [Group("vote")]
+    [Summary("Commands for running a round of voting")]
     public class VotingModule : ModuleBase
     {
         private readonly VotingService _votingService;
@@ -24,6 +25,7 @@ namespace dbot.CommandModules
         }
 
         [Command("start")]
+        [Summary("Starts a round of voting")]
         [Priority(3)]
         public async Task Start()
         {
@@ -48,6 +50,7 @@ namespace dbot.CommandModules
         }
 
         [Command("end")]
+        [Summary ("Ends the round of voting and prints the results")]
         [Priority(3)]
         public async Task End()
         {
@@ -78,6 +81,7 @@ namespace dbot.CommandModules
         }
 
         [Command("results")]
+        [Summary ("Prints the in progress results from a round of voting")]
         [Priority(2)]
         public async Task Results()
         {

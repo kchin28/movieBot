@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace dbot.CommandModules
 {
     [Group("info")]
+    [Summary("Commands for fetching movie information")]
     class InfoModule : ModuleBase
     {
         private readonly OmdbService _omdbService;

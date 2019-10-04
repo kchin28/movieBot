@@ -10,6 +10,7 @@ using Discord.WebSocket;
 namespace dbot.CommandModules
 {
     [Group("nominate")]
+    [Summary("Commands for nominating movies")]
     public class NominationsModule : ModuleBase
     {
         private readonly NominationsService _nominationsService;

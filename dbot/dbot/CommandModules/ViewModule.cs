@@ -11,6 +11,7 @@ using System.Linq;
 namespace dbot.CommandModules
 {
     [Group("view")]
+    [Summary("Commands for viewing nomination and voting state")]
     public class ViewModule : ModuleBase
     {
         private readonly NominationsService _nominationsService;
