@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace dbot.CommandModules
 {
-    [Group("vote")]
+    [Group("Vote")]
     [Summary("Commands for running a round of voting")]
     public class VotingModule : ModuleBase
     {

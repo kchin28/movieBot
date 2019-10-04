@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace dbot.CommandModules
 {
-    [Group("help")]
+    [Group("Help")]
     [Summary("Help information")]
     class HelpModule : ModuleBase
     {
@@ -43,7 +43,7 @@ namespace dbot.CommandModules
             var module = _commandService.Modules.Where(m => m.Name.ToLower() == commandName.ToLower())
                                                 .Single();
             var sb = new StringBuilder();
-            sb.AppendLine($"Usage information for {commandName}");
+            sb.AppendLine($"Usage information for {module.Name}");
             foreach(var command in module.Commands)
             {
                 sb.AppendLine($"**{command.Name}**: {command.Summary}");

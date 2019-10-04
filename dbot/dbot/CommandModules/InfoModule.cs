@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace dbot.CommandModules
 {
-    [Group("info")]
+    [Group("Info")]
     [Summary("Commands for fetching movie information")]
     class InfoModule : ModuleBase
     {
