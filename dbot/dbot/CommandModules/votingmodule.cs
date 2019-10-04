@@ -24,8 +24,9 @@ namespace dbot.CommandModules
             _omdbService = omdbService;
         }
 
-        [Command("start")]
+        [Command("Start")]
         [Summary("Starts a round of voting")]
+        [Remarks("Usage: !vote start")]
         [Priority(3)]
         public async Task Start()
         {
@@ -49,8 +50,9 @@ namespace dbot.CommandModules
             }
         }
 
-        [Command("end")]
+        [Command("End")]
         [Summary ("Ends the round of voting and prints the results")]
+        [Remarks("Usage: !vote end")]
         [Priority(3)]
         public async Task End()
         {
@@ -80,8 +82,9 @@ namespace dbot.CommandModules
             }
         }
 
-        [Command("results")]
+        [Command("Results")]
         [Summary ("Prints the in progress results from a round of voting")]
+        [Remarks("Usage: !vote results")]
         [Priority(2)]
         public async Task Results()
         {
@@ -104,6 +107,9 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Name("By Id")]
+        [Summary("Votes for a movie by assigned id")]
+        [Remarks("Usage: !vote <integer>")]
         [Priority(2)]
         public async Task Default(int movId)
         {
@@ -127,6 +133,9 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Name("By Name")]
+        [Summary("Votes for a movie by movie name")]
+        [Remarks("Usage: !vote <movie name>")]
         [Priority(1)]
         public async Task Default([Remainder]string mov)
         {
@@ -161,7 +170,10 @@ namespace dbot.CommandModules
             }
         }
 
-        [Command("random")]
+        [Command("Random")]
+        [Name("True Random")]
+        [Summary("Votes for a movie randomly")]
+        [Remarks("Usage: !vote random")]
         [Priority(3)]
         public async Task VoteRandom()
         {
@@ -178,6 +190,9 @@ namespace dbot.CommandModules
         }
 
         [Command("random")]
+        [Name("Random Id List")]
+        [Summary("Votes for a movie randomly from a list of space separated ids")]
+        [Remarks("Usage: !vote random <id1> <id2> ..")]
         [Priority(3)]
         public async Task VoteRandom(params int[] candidates)
         {
@@ -201,6 +216,9 @@ namespace dbot.CommandModules
         }
 
         [Command("random")]
+        [Name("Random Name List")]
+        [Summary("Votes for a movie randomly from a list of space separated movie names")]
+        [Remarks("Usage: !vote random \"<movie1>\" \"<movie2>\" ..")]
         [Priority(2)]
         public async Task VoteRandom(params string[] candidates)
         {
