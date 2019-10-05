@@ -32,11 +32,19 @@ namespace dbot.CommandModules
         {
             Console.WriteLine("Got view nominations request");
             var noms = _nominationsService.GetNominations();
-            if (!noms.Any()) { return; }
+            
+            if (!noms.Any())
+            {
+                return;
+            }
+
             var sb = new StringBuilder();
-            foreach (var n in noms) {
+
+            foreach (var n in noms) 
+            {
                 sb.AppendLine($"{n.id}. {n.movName}");
             }
+            
             await ReplyAsync(sb.ToString());
         }
 
@@ -46,12 +54,15 @@ namespace dbot.CommandModules
         public async Task ViewVotes()
         {
             Console.WriteLine("Got view votes request");
+
             var votes = _votingService.GetResults(_nominationsService.GetNominations());
             var sb = new StringBuilder();
+
             foreach (var v in votes)
             {
                 sb.AppendLine($"{v.movie.id}. {v.movie.movName}: {v.votes}");
             }
+
             await ReplyAsync(sb.ToString());
 
         }
@@ -62,12 +73,15 @@ namespace dbot.CommandModules
         {
             Console.WriteLine("Got view voters request");
             var voters = _votingService.GetVoters();
+
             var sb = new StringBuilder();
             sb.AppendLine("Current Voters:");
+
             foreach (var u in voters)
             {
                 sb.AppendLine($"{u.Username}");
             }
+
             await ReplyAsync(sb.ToString());
         }
 

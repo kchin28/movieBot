@@ -38,10 +38,12 @@ namespace dbot.Models
 
             sb.AppendLine($"**{Title} - ({Year}) - {Runtime}**");
             sb.AppendLine($"{Plot}");
+            
             foreach(var rating in Ratings)
             {
                 sb.AppendLine($"{rating.Source} - {rating.Value}");
             }
+            
             sb.AppendLine($"{Poster}");
             return sb.ToString();
         }

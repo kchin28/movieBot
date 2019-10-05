@@ -12,9 +12,9 @@ namespace dbot.Services
 
         public void AddNomination(IUser userName,string title, string imdbID) 
         {
-
-                //only keeps last nomination
+                // Only keeps last nomination
                 var newNom = new Nomination(title, GetNextId(),imdbID);
+
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
@@ -30,12 +30,14 @@ namespace dbot.Services
             return nominations.Where(n => n.imdb == imdbId).Any();
         }
 
-        public string ViewNominations() {
+        public string ViewNominations()
+        {
             var current = GetNominations();
             var movies = current.Select(x => x.movName);
             var sb = new StringBuilder();
 
-            foreach (var movie in movies) {
+            foreach (var movie in movies) 
+            {
                 sb.AppendLine(movie);
             }
             return sb.ToString();
@@ -44,13 +46,13 @@ namespace dbot.Services
         public string ViewNominationsWithId()
         {
             var nominations = GetNominations();
-
             var sb = new StringBuilder();
 
             foreach(var nomination in nominations)
             {
                 sb.AppendLine($"{nomination.id}. {nomination.movName}");
             }
+
             return sb.ToString();
         }
 
@@ -72,6 +74,7 @@ namespace dbot.Services
         public void DeleteNominationForUser(IUser user)
         {
             Nomination nomination;
+
             if(currNoms.TryRemove(user, out nomination))
             {
                 FixNominationIds();
@@ -80,10 +83,11 @@ namespace dbot.Services
 
         private void FixNominationIds()
         {
-            //Grab the entire nominations list
+            // Grab the entire nominations list
             var nominations = currNoms.ToArray();
-            //Re-number from 1 to n of remaining nominations
+            // Re-number from 1 to n of remaining nominations
             int id = 1;
+
             foreach(var nomination in nominations)
             {
                 nomination.Value.id = id++;
@@ -95,8 +99,6 @@ namespace dbot.Services
         {
             return currNoms.Count() + 1;
         }
-        //cannot delete nominations only replace bc the id's won't be in order
-        //no verification on omdb
     }
 
     public class Nomination 

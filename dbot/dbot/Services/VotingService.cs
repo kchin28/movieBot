@@ -27,7 +27,7 @@ namespace dbot.Services
 
         public void Vote(IUser user, int movieId)
         {
-            //Always update with newest movieId
+            // Always update with newest movieId
             _votes.AddOrUpdate(user, movieId,
                 (key, movie) =>
                 {
@@ -54,7 +54,7 @@ namespace dbot.Services
         {
             var results = new List<VotingResult>();
 
-            //Tabulate results
+            // Tabulate results
             foreach(var nomination in nominations)
             {
                 results.Add(new VotingResult { movie = nomination,

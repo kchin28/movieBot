@@ -25,6 +25,7 @@ namespace dbot
         {
             string token = null;
             string tokenKey = null;
+            
             switch (tok)
             {
                 case TokenKey.DiscordToken:
@@ -34,6 +35,7 @@ namespace dbot
                     tokenKey = _omdbToken;
                     break;
             }
+
             using (var fs = System.IO.File.OpenRead(_secretsUri))
             using (var sReader = new System.IO.StreamReader(fs))
             {

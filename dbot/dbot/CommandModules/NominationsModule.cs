@@ -47,7 +47,7 @@ namespace dbot.CommandModules
                         Console.WriteLine($"Adding nominated movie \"{name}\"");
                         await ReplyAsync(movie.ToString());
 
-                        //if this isnt the right one, specify the year and change the nomination
+                        // If this isnt the right one, specify the year and change the nomination
                         _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
                         await ReplyAsync("Thanks for nominating!");
                     }
@@ -88,7 +88,7 @@ namespace dbot.CommandModules
                         Console.WriteLine($"Adding nominated movie \"{name}\"");
                         await ReplyAsync(movie.ToString());
 
-                        //if this isnt the right one, specify the year and change the nomination obj
+                        // If this isnt the right one, specify the year and change the nomination obj
                         _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
                         await ReplyAsync("Thanks for nominating!");
                     }
@@ -129,7 +129,7 @@ namespace dbot.CommandModules
                         Console.WriteLine($"Adding nominated movie \"{id}\"");
                         await ReplyAsync(mov.ToString());
 
-                        //if this isnt the right one, specify the year and change the nomination
+                        // If this isnt the right one, specify the year and change the nomination
                         _nominationsService.AddNomination(Context.User, mov.Title, mov.imdbID);
                         await ReplyAsync("Thanks for nominating!");
                     }

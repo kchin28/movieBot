@@ -36,6 +36,7 @@ namespace dbot.CommandModules
                 {
                     _votingService.StartVote();
                     Console.WriteLine("Starting voting session");
+
                     await ReplyAsync("Voting has opened!");
                     await ReplyAsync(_nominationsService.ViewNominationsWithId());
                 }
@@ -60,17 +61,23 @@ namespace dbot.CommandModules
             {
                 Console.WriteLine("Ending voting session");
                 _votingService.EndVote();
+
                 var results = _votingService.GetResults(_nominationsService.GetNominations());
                 _votingService.ClearResults();
                 _nominationsService.ClearNominations();
+
                 var sb = new StringBuilder();
                 sb.AppendLine("Voting has ended! The results: ");
+
                 foreach (var res in results)
                 {
                     sb.AppendLine($"{res.movie.movName}: {res.votes}");
                 }
+
                 var winner = _votingService.GetWinner(results);
+
                 sb.AppendLine($"The winner is: {winner.movie.movName}");
+
                 await ReplyAsync(sb.ToString());
                 var movie = await _omdbService.GetMovieByTitle(winner.movie.movName);
                 await ReplyAsync(movie.ToString());
@@ -144,6 +151,7 @@ namespace dbot.CommandModules
             {
                 var noms = _nominationsService.GetNominations();
                 Nomination nomination = null;
+                
                 try
                 {
                     nomination = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));
@@ -178,6 +186,7 @@ namespace dbot.CommandModules
         public async Task VoteRandom()
         {
             Console.WriteLine("Got random vote");
+
             if (_votingService.VotingOpen())
             {
                 _votingService.VoteForRandomCandidate(Context.User, _nominationsService.GetNominations());
@@ -200,6 +209,7 @@ namespace dbot.CommandModules
             if (_votingService.VotingOpen())
             {
                 var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.id));
+
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {
                     await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
@@ -226,6 +236,7 @@ namespace dbot.CommandModules
             if (_votingService.VotingOpen())
             {
                 var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.movName));
+
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {
                     await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
