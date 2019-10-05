@@ -10,16 +10,16 @@ namespace dbot.Services
     {
         private static ConcurrentDictionary<IUser, Nomination> currNoms = new ConcurrentDictionary<IUser, Nomination>();
 
-        public void AddNomination(IUser userName,string title, string imdbID) 
+        public void AddNomination(IUser userName,string title, string imdbId) 
         {
                 // Only keeps last nomination
-                var newNom = new Nomination(title, GetNextId(),imdbID);
+                var newNom = new Nomination(title, GetNextId(),imdbId);
 
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
-                        v.ImdbId    = newNom.ImdbId;
-                        v.Name = newNom.Name;
+                        v.ImdbId  = newNom.ImdbId;
+                        v.Name    = newNom.Name;
                         return v;
                     });
         }

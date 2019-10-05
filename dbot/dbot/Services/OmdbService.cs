@@ -55,7 +55,7 @@ namespace dbot.Services
             return movie;
         }
 
-        public async Task<Movie> GetItemByID(string id)
+        public async Task<Movie> GetItemById(string id)
         {
             var movie = await Request<Movie>($"i={id}").ConfigureAwait(false);
             return movie;
