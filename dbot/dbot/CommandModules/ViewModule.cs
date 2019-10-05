@@ -33,7 +33,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got view nominations request");
             var noms = _nominationsService.GetNominations();
             if (!noms.Any()) { return; }
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var n in noms) {
                 sb.AppendLine($"{n.id}. {n.movName}");
             }
@@ -47,7 +47,7 @@ namespace dbot.CommandModules
         {
             Console.WriteLine("Got view votes request");
             var votes = _votingService.GetResults(_nominationsService.GetNominations());
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var v in votes)
             {
                 sb.AppendLine($"{v.movie.id}. {v.movie.movName}: {v.votes}");
@@ -62,7 +62,7 @@ namespace dbot.CommandModules
         {
             Console.WriteLine("Got view voters request");
             var voters = _votingService.GetVoters();
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine("Current Voters:");
             foreach (var u in voters)
             {
