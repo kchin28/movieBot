@@ -32,12 +32,12 @@ namespace dbot.CommandModules
         {
             if (!_votingService.VotingOpen())
             {
-                if (_nominationsService.getNominations().Any())
+                if (_nominationsService.GetNominations().Any())
                 {
                     _votingService.StartVote();
                     Console.WriteLine("Starting voting session");
                     await ReplyAsync("Voting has opened!");
-                    await ReplyAsync(_nominationsService.viewNominationsWithId());
+                    await ReplyAsync(_nominationsService.ViewNominationsWithId());
                 }
                 else
                 {
@@ -60,9 +60,9 @@ namespace dbot.CommandModules
             {
                 Console.WriteLine("Ending voting session");
                 _votingService.EndVote();
-                var results = _votingService.GetResults(_nominationsService.getNominations());
+                var results = _votingService.GetResults(_nominationsService.GetNominations());
                 _votingService.ClearResults();
-                _nominationsService.clearNominations();
+                _nominationsService.ClearNominations();
                 var sb = new StringBuilder();
                 sb.AppendLine("Voting has ended! The results: ");
                 foreach (var res in results)
@@ -89,7 +89,7 @@ namespace dbot.CommandModules
         public async Task Results()
         {
             Console.WriteLine("Got request to show vote results");
-            var results = _votingService.GetResults(_nominationsService.getNominations());
+            var results = _votingService.GetResults(_nominationsService.GetNominations());
             var sb = new StringBuilder();
 
             if (_votingService.VotingOpen())
@@ -116,7 +116,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got vote");
             if (_votingService.VotingOpen())
             {
-                if (_nominationsService.getNominations().Select(x => x.id).Contains(movId))
+                if (_nominationsService.GetNominations().Select(x => x.id).Contains(movId))
                 {
                     _votingService.Vote(Context.User, movId);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
@@ -142,7 +142,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got vote");
             if (_votingService.VotingOpen())
             {
-                var noms = _nominationsService.getNominations();
+                var noms = _nominationsService.GetNominations();
                 Nomination nomination = null;
                 try
                 {
@@ -180,7 +180,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got random vote");
             if (_votingService.VotingOpen())
             {
-                _votingService.VoteForRandomCandidate(Context.User, _nominationsService.getNominations());
+                _votingService.VoteForRandomCandidate(Context.User, _nominationsService.GetNominations());
                 await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
             }
             else
@@ -199,7 +199,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
-                var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.id));
+                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.id));
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {
                     await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");
@@ -225,7 +225,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
-                var nominations = _nominationsService.getNominations().Where(n => candidates.Contains(n.movName));
+                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.movName));
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {
                     await ReplyAsync($"🎲🎲\r\n{Context.User.Username}, your vote has been registered!");

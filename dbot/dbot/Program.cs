@@ -21,8 +21,8 @@ namespace dbot
 
         public async Task MainAsync()
         {
-            var discordToken = TokenManager.getToken(TokenKey.DiscordToken);
-            var omdbToken = TokenManager.getToken(TokenKey.OMDBToken);
+            var discordToken = TokenManager.GetToken(TokenKey.DiscordToken);
+            var omdbToken = TokenManager.GetToken(TokenKey.OMDBToken);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();

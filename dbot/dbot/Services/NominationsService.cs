@@ -14,7 +14,7 @@ namespace dbot.Services
         {
 
                 //only keeps last nomination
-                var newNom = new Nomination(title, getNextId(),imdbID);
+                var newNom = new Nomination(title, GetNextId(),imdbID);
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
@@ -26,12 +26,12 @@ namespace dbot.Services
 
         public bool IsNominated(string imdbId)
         {
-            var nominations = getNominations();
+            var nominations = GetNominations();
             return nominations.Where(n => n.imdb == imdbId).Any();
         }
 
-        public string viewNominations() {
-            var current = getNominations();
+        public string ViewNominations() {
+            var current = GetNominations();
             var movies = current.Select(x => x.movName);
             var sb = new StringBuilder();
 
@@ -41,9 +41,9 @@ namespace dbot.Services
             return sb.ToString();
         } 
 
-        public string viewNominationsWithId()
+        public string ViewNominationsWithId()
         {
-            var nominations = getNominations();
+            var nominations = GetNominations();
 
             var sb = new StringBuilder();
 
@@ -54,12 +54,12 @@ namespace dbot.Services
             return sb.ToString();
         }
 
-        public IEnumerable<Nomination> getNominations()
+        public IEnumerable<Nomination> GetNominations()
         {
             return currNoms.Select(x => x.Value).OrderBy(x => x.id);
         }
 
-        public void clearNominations()
+        public void ClearNominations()
         {
             currNoms.Clear();
         }
@@ -91,7 +91,7 @@ namespace dbot.Services
             }
         }
 
-        private int getNextId()
+        private int GetNextId()
         {
             return currNoms.Count() + 1;
         }

@@ -28,10 +28,10 @@ namespace dbot.CommandModules
         [Command("Nominations")]
         [Summary("Prints a list of all current nominations")]
         [Remarks("Usage: !view nominations")]
-        public async Task viewNom()
+        public async Task ViewNomination()
         {
             Console.WriteLine("Got view nominations request");
-            var noms = _nominationsService.getNominations();
+            var noms = _nominationsService.GetNominations();
             if (!noms.Any()) { return; }
             StringBuilder sb = new StringBuilder();
             foreach (var n in noms) {
@@ -43,10 +43,10 @@ namespace dbot.CommandModules
         [Command("Votes")]
         [Summary("Prints the current voting status")]
         [Remarks("Usage: !view votes")]
-        public async Task viewVotes()
+        public async Task ViewVotes()
         {
             Console.WriteLine("Got view votes request");
-            var votes = _votingService.GetResults(_nominationsService.getNominations());
+            var votes = _votingService.GetResults(_nominationsService.GetNominations());
             StringBuilder sb = new StringBuilder();
             foreach (var v in votes)
             {
@@ -58,7 +58,7 @@ namespace dbot.CommandModules
         [Command("Voters")]
         [Summary("Prints a list of all users who have voted")]
         [Remarks("Usage: !view voters")]
-        public async Task viewVoters()
+        public async Task ViewVoters()
         {
             Console.WriteLine("Got view voters request");
             var voters = _votingService.GetVoters();

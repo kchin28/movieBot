@@ -153,7 +153,7 @@ namespace dbot.CommandModules
         public async Task ViewNominationsAsync()
         {
             Console.WriteLine("Got request to display nominations");
-            string result = _nominationsService.viewNominations();
+            string result = _nominationsService.ViewNominations();
             await ReplyAsync(result);
 
         }

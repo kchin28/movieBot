@@ -21,7 +21,7 @@ namespace dbot
         private static readonly string _secretsUri = "secrets.json";
     #endif
         
-        public static string getToken(TokenKey tok)
+        public static string GetToken(TokenKey tok)
         {
             string token = null;
             string tokenKey = null;
