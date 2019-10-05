@@ -71,15 +71,15 @@ namespace dbot.CommandModules
 
                 foreach (var res in results)
                 {
-                    sb.AppendLine($"{res.movie.movName}: {res.votes}");
+                    sb.AppendLine($"{res.Movie.movName}: {res.Votes}");
                 }
 
                 var winner = _votingService.GetWinner(results);
 
-                sb.AppendLine($"The winner is: {winner.movie.movName}");
+                sb.AppendLine($"The winner is: {winner.Movie.movName}");
 
                 await ReplyAsync(sb.ToString());
-                var movie = await _omdbService.GetMovieByTitle(winner.movie.movName);
+                var movie = await _omdbService.GetMovieByTitle(winner.Movie.movName);
                 await ReplyAsync(movie.ToString());
                 
             }
@@ -103,7 +103,7 @@ namespace dbot.CommandModules
             {
                 foreach (var res in results)
                 {
-                    sb.AppendLine($"{res.movie.movName} : {res.votes}");
+                    sb.AppendLine($"{res.Movie.movName} : {res.Votes}");
                 }
                 await ReplyAsync(sb.ToString());
             }
@@ -151,7 +151,7 @@ namespace dbot.CommandModules
             {
                 var noms = _nominationsService.GetNominations();
                 Nomination nomination = null;
-                
+
                 try
                 {
                     nomination = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));

@@ -9,8 +9,8 @@ namespace dbot.Services
 {
     public class VotingResult
     {
-        public Nomination movie { get; set; }
-        public int votes { get; set; }
+        public Nomination Movie { get; set; }
+        public int Votes { get; set; }
     }
 
     public class VotingService
@@ -57,16 +57,16 @@ namespace dbot.Services
             // Tabulate results
             foreach(var nomination in nominations)
             {
-                results.Add(new VotingResult { movie = nomination,
-                                               votes = _votes.Values.Where(x => x == nomination.id).Count() });
+                results.Add(new VotingResult { Movie = nomination,
+                                               Votes = _votes.Values.Where(x => x == nomination.id).Count() });
             }
             return results;
         }
 
         public VotingResult GetWinner(IEnumerable<VotingResult> results)
         {
-            var winningVote = results.Select(x => x.votes).Max();
-            var winners = results.Where(x => x.votes == winningVote);
+            var winningVote = results.Select(x => x.Votes).Max();
+            var winners = results.Where(x => x.Votes == winningVote);
             var rng = new Random();
             var toSkip = rng.Next(0, winners.Count());
             
