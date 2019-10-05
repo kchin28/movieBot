@@ -168,8 +168,8 @@ namespace dbot.CommandModules
             if(_nominationsService.UserHasNomination(Context.User, out nomination))
             {
                 _nominationsService.DeleteNominationForUser(Context.User);
-                Console.WriteLine($"Deleted {nomination.movName} from nominations (nominated by {Context.User})");
-                await ReplyAsync($"Deleted {nomination.movName} from nominations!");
+                Console.WriteLine($"Deleted {nomination.Name} from nominations (nominated by {Context.User})");
+                await ReplyAsync($"Deleted {nomination.Name} from nominations!");
             }
             else
             {

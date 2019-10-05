@@ -42,7 +42,7 @@ namespace dbot.CommandModules
 
             foreach (var n in noms) 
             {
-                sb.AppendLine($"{n.id}. {n.movName}");
+                sb.AppendLine($"{n.VotingId}. {n.Name}");
             }
 
             await ReplyAsync(sb.ToString());
@@ -60,7 +60,7 @@ namespace dbot.CommandModules
 
             foreach (var v in votes)
             {
-                sb.AppendLine($"{v.Movie.id}. {v.Movie.movName}: {v.Votes}");
+                sb.AppendLine($"{v.Movie.VotingId}. {v.Movie.Name}: {v.Votes}");
             }
 
             await ReplyAsync(sb.ToString());

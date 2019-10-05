@@ -71,15 +71,15 @@ namespace dbot.CommandModules
 
                 foreach (var res in results)
                 {
-                    sb.AppendLine($"{res.Movie.movName}: {res.Votes}");
+                    sb.AppendLine($"{res.Movie.Name}: {res.Votes}");
                 }
 
                 var winner = _votingService.GetWinner(results);
 
-                sb.AppendLine($"The winner is: {winner.Movie.movName}");
+                sb.AppendLine($"The winner is: {winner.Movie.Name}");
 
                 await ReplyAsync(sb.ToString());
-                var movie = await _omdbService.GetMovieByTitle(winner.Movie.movName);
+                var movie = await _omdbService.GetMovieByTitle(winner.Movie.Name);
                 await ReplyAsync(movie.ToString());
                 
             }
@@ -103,7 +103,7 @@ namespace dbot.CommandModules
             {
                 foreach (var res in results)
                 {
-                    sb.AppendLine($"{res.Movie.movName} : {res.Votes}");
+                    sb.AppendLine($"{res.Movie.Name} : {res.Votes}");
                 }
                 await ReplyAsync(sb.ToString());
             }
@@ -123,7 +123,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got vote");
             if (_votingService.VotingOpen())
             {
-                if (_nominationsService.GetNominations().Select(x => x.id).Contains(movId))
+                if (_nominationsService.GetNominations().Select(x => x.VotingId).Contains(movId))
                 {
                     _votingService.Vote(Context.User, movId);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
@@ -154,7 +154,7 @@ namespace dbot.CommandModules
 
                 try
                 {
-                    nomination = noms.Single(x => x.movName.ToLower().Equals(mov.ToLower()));
+                    nomination = noms.Single(x => x.Name.ToLower().Equals(mov.ToLower()));
                 }
                 catch 
                 {
@@ -168,7 +168,7 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    _votingService.Vote(Context.User, nomination.id);
+                    _votingService.Vote(Context.User, nomination.VotingId);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
             }
@@ -208,7 +208,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
-                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.id));
+                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.VotingId));
 
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {
@@ -235,7 +235,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
-                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.movName));
+                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.Name));
 
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {

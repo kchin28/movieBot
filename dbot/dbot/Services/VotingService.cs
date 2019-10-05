@@ -58,7 +58,7 @@ namespace dbot.Services
             foreach(var nomination in nominations)
             {
                 results.Add(new VotingResult { Movie = nomination,
-                                               Votes = _votes.Values.Where(x => x == nomination.id).Count() });
+                                               Votes = _votes.Values.Where(x => x == nomination.VotingId).Count() });
             }
             return results;
         }
@@ -79,7 +79,7 @@ namespace dbot.Services
             {
                 var rng = new Random();
                 var winner = nominations.Skip(rng.Next(0, nominations.Count()))
-                                        .Take(1).Single().id;
+                                        .Take(1).Single().VotingId;
                 Vote(user, winner);
                 return true;
             }
