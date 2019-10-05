@@ -10,7 +10,8 @@ using System.Linq;
 
 namespace dbot.CommandModules
 {
-    [Group("view")]
+    [Group("View")]
+    [Summary("Commands for viewing nomination and voting state")]
     public class ViewModule : ModuleBase
     {
         private readonly NominationsService _nominationsService;
@@ -24,7 +25,9 @@ namespace dbot.CommandModules
             _votingService = vs;
         }
 
-        [Command("nominations")]
+        [Command("Nominations")]
+        [Summary("Prints a list of all current nominations")]
+        [Remarks("Usage: !view nominations")]
         public async Task viewNom()
         {
             Console.WriteLine("Got view nominations request");
@@ -37,7 +40,9 @@ namespace dbot.CommandModules
             await ReplyAsync(sb.ToString());
         }
 
-        [Command("votes")]
+        [Command("Votes")]
+        [Summary("Prints the current voting status")]
+        [Remarks("Usage: !view votes")]
         public async Task viewVotes()
         {
             Console.WriteLine("Got view votes request");
@@ -50,7 +55,9 @@ namespace dbot.CommandModules
             await ReplyAsync(sb.ToString());
 
         }
-        [Command("voters")]
+        [Command("Voters")]
+        [Summary("Prints a list of all users who have voted")]
+        [Remarks("Usage: !view voters")]
         public async Task viewVoters()
         {
             Console.WriteLine("Got view voters request");

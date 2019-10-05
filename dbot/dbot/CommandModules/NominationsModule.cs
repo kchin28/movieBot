@@ -9,7 +9,8 @@ using Discord.WebSocket;
 
 namespace dbot.CommandModules
 {
-    [Group("nominate")]
+    [Group("Nominate")]
+    [Summary("Commands for nominating movies")]
     public class NominationsModule : ModuleBase
     {
         private readonly NominationsService _nominationsService;
@@ -24,6 +25,9 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Name("By Name")]
+        [Summary("Nominate a movie by name")]
+        [Remarks("Usage: !nominate <movie name>")]
         public async Task AddNominationASync([Remainder]string name)
         {
             Console.WriteLine($"Got nomination request for \"{name}\"");
@@ -61,6 +65,9 @@ namespace dbot.CommandModules
         }
 
         [Command] 
+        [Name("By Name and Year")]
+        [Summary("Nominate a movie by name and year")]
+        [Remarks("Usage: !nominate <movie name> <year>")]
         public async Task AddNominationWithYearASync(string name, int year)
         {
             Console.WriteLine($"Got nomination request for \"{name}\", {year}");
@@ -99,6 +106,9 @@ namespace dbot.CommandModules
         }
 
         [Command("id")]
+        [Name("By IMDB Id")]
+        [Summary("Nominate a movie by IMDB id")]
+        [Remarks("Usage: !nominate <id>")]
         [Priority(1)]
         public async Task NominateById(string id)
         {
@@ -136,7 +146,9 @@ namespace dbot.CommandModules
             }
         }
 
-        [Command("view")]
+        [Command("View")]
+        [Summary("Prints a list of current nominations")]
+        [Remarks("Usage: !nominate view")]
         [Priority(2)]
         public async Task ViewNominationsAsync()
         {
@@ -146,7 +158,9 @@ namespace dbot.CommandModules
 
         }
 
-        [Command("delete")]
+        [Command("Delete")]
+        [Summary("Delete your nomination")]
+        [Remarks("Usage: !nominate delete")]
         [Priority(2)]
         public async Task DeleteNominationForUser() 
         {

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace dbot.CommandModules
 {
-    [Group("info")]
+    [Group("Info")]
+    [Summary("Commands for fetching movie information")]
     class InfoModule : ModuleBase
     {
         private readonly OmdbService _omdbService;
@@ -17,6 +18,9 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Name("By Name")]
+        [Summary("Searches for information of a movie by name")]
+        [Remarks("Usage: !info <movie name>")]
         public async Task Default(string movieName)
         {
             var movie = await _omdbService.GetMovieByTitle(movieName);
@@ -25,6 +29,9 @@ namespace dbot.CommandModules
         }
 
         [Command]
+        [Name("By Year")]
+        [Summary("Searches for information of a movie by name and year")]
+        [Remarks("Usage: !info <movie name> <year>")]
         public async Task Default(string movieName, int year)
         {
             var movie = await _omdbService.GetMovieByTitleYear(movieName, year);
