@@ -42,13 +42,13 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    if(!_nominationsService.IsNominated(movie.imdbId))
+                    if(!_nominationsService.IsNominated(movie.ImdbId))
                     {
                         Console.WriteLine($"Adding nominated movie \"{name}\"");
                         await ReplyAsync(movie.ToString());
 
                         // If this isnt the right one, specify the year and change the nomination
-                        _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbId);
+                        _nominationsService.AddNomination(Context.User, movie.Title, movie.ImdbId);
                         await ReplyAsync("Thanks for nominating!");
                     }
                     else
@@ -83,13 +83,13 @@ namespace dbot.CommandModules
                 }
                 else
                 {
-                    if(!_nominationsService.IsNominated(movie.imdbId))
+                    if(!_nominationsService.IsNominated(movie.ImdbId))
                     {
                         Console.WriteLine($"Adding nominated movie \"{name}\"");
                         await ReplyAsync(movie.ToString());
 
                         // If this isnt the right one, specify the year and change the nomination obj
-                        _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbId);
+                        _nominationsService.AddNomination(Context.User, movie.Title, movie.ImdbId);
                         await ReplyAsync("Thanks for nominating!");
                     }
                     else
@@ -124,13 +124,13 @@ namespace dbot.CommandModules
                 }
                 else
                 {
-                    if(!_nominationsService.IsNominated(mov.imdbId))
+                    if(!_nominationsService.IsNominated(mov.ImdbId))
                     {
                         Console.WriteLine($"Adding nominated movie \"{id}\"");
                         await ReplyAsync(mov.ToString());
 
                         // If this isnt the right one, specify the year and change the nomination
-                        _nominationsService.AddNomination(Context.User, mov.Title, mov.imdbId);
+                        _nominationsService.AddNomination(Context.User, mov.Title, mov.ImdbId);
                         await ReplyAsync("Thanks for nominating!");
                     }
                     else
