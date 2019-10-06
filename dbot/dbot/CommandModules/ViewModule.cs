@@ -28,46 +28,60 @@ namespace dbot.CommandModules
         [Command("Nominations")]
         [Summary("Prints a list of all current nominations")]
         [Remarks("Usage: !view nominations")]
-        public async Task viewNom()
+        public async Task ViewNomination()
         {
             Console.WriteLine("Got view nominations request");
-            var noms = _nominationsService.getNominations();
-            if (!noms.Any()) { return; }
-            StringBuilder sb = new StringBuilder();
-            foreach (var n in noms) {
-                sb.AppendLine($"{n.id}. {n.movName}");
+            var noms = _nominationsService.GetNominations();
+            
+            if (!noms.Any())
+            {
+                return;
             }
+
+            var sb = new StringBuilder();
+
+            foreach (var n in noms) 
+            {
+                sb.AppendLine($"{n.VotingId}. {n.Name}");
+            }
+
             await ReplyAsync(sb.ToString());
         }
 
         [Command("Votes")]
         [Summary("Prints the current voting status")]
         [Remarks("Usage: !view votes")]
-        public async Task viewVotes()
+        public async Task ViewVotes()
         {
             Console.WriteLine("Got view votes request");
-            var votes = _votingService.GetResults(_nominationsService.getNominations());
-            StringBuilder sb = new StringBuilder();
+
+            var votes = _votingService.GetResults(_nominationsService.GetNominations());
+            var sb = new StringBuilder();
+
             foreach (var v in votes)
             {
-                sb.AppendLine($"{v.movie.id}. {v.movie.movName}: {v.votes}");
+                sb.AppendLine($"{v.Movie.VotingId}. {v.Movie.Name}: {v.Votes}");
             }
+
             await ReplyAsync(sb.ToString());
 
         }
         [Command("Voters")]
         [Summary("Prints a list of all users who have voted")]
         [Remarks("Usage: !view voters")]
-        public async Task viewVoters()
+        public async Task ViewVoters()
         {
             Console.WriteLine("Got view voters request");
             var voters = _votingService.GetVoters();
-            StringBuilder sb = new StringBuilder();
+
+            var sb = new StringBuilder();
             sb.AppendLine("Current Voters:");
+
             foreach (var u in voters)
             {
                 sb.AppendLine($"{u.Username}");
             }
+
             await ReplyAsync(sb.ToString());
         }
 

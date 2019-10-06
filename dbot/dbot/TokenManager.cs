@@ -21,10 +21,11 @@ namespace dbot
         private static readonly string _secretsUri = "secrets.json";
     #endif
         
-        public static string getToken(TokenKey tok)
+        public static string GetToken(TokenKey tok)
         {
             string token = null;
             string tokenKey = null;
+            
             switch (tok)
             {
                 case TokenKey.DiscordToken:
@@ -34,6 +35,7 @@ namespace dbot
                     tokenKey = _omdbToken;
                     break;
             }
+
             using (var fs = System.IO.File.OpenRead(_secretsUri))
             using (var sReader = new System.IO.StreamReader(fs))
             {

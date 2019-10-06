@@ -30,6 +30,7 @@ namespace dbot.Services
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 var response = await client.GetAsync($"{_baseUri}{query}").ConfigureAwait(false);
+                
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -54,7 +55,7 @@ namespace dbot.Services
             return movie;
         }
 
-        public async Task<Movie> GetItemByID(string id)
+        public async Task<Movie> GetItemById(string id)
         {
             var movie = await Request<Movie>($"i={id}").ConfigureAwait(false);
             return movie;

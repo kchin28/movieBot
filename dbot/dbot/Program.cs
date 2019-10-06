@@ -21,8 +21,8 @@ namespace dbot
 
         public async Task MainAsync()
         {
-            var discordToken = TokenManager.getToken(TokenKey.DiscordToken);
-            var omdbToken = TokenManager.getToken(TokenKey.OMDBToken);
+            var discordToken = TokenManager.GetToken(TokenKey.DiscordToken);
+            var omdbToken = TokenManager.GetToken(TokenKey.OMDBToken);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();
@@ -37,7 +37,6 @@ namespace dbot
             services = serviceCollection.BuildServiceProvider();
             await InstallCommands();
 
-            //  client.Log += Log;
             await client.LoginAsync(Discord.TokenType.Bot, discordToken);
             await client.StartAsync();
             await Task.Delay(-1); 
@@ -56,7 +55,7 @@ namespace dbot
         {
             var message = messageParam as SocketUserMessage;
 
-            //check the message for null etc 
+            // Check the message for null etc 
             if (message == null) return;
             int argPos = 0;
 

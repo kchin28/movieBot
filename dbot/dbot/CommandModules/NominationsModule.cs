@@ -42,13 +42,13 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    if(!_nominationsService.IsNominated(movie.imdbID))
+                    if(!_nominationsService.IsNominated(movie.ImdbId))
                     {
                         Console.WriteLine($"Adding nominated movie \"{name}\"");
                         await ReplyAsync(movie.ToString());
 
-                        //if this isnt the right one, specify the year and change the nomination
-                        _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
+                        // If this isnt the right one, specify the year and change the nomination
+                        _nominationsService.AddNomination(Context.User, movie.Title, movie.ImdbId);
                         await ReplyAsync("Thanks for nominating!");
                     }
                     else
@@ -83,13 +83,13 @@ namespace dbot.CommandModules
                 }
                 else
                 {
-                    if(!_nominationsService.IsNominated(movie.imdbID))
+                    if(!_nominationsService.IsNominated(movie.ImdbId))
                     {
                         Console.WriteLine($"Adding nominated movie \"{name}\"");
                         await ReplyAsync(movie.ToString());
 
-                        //if this isnt the right one, specify the year and change the nomination obj
-                        _nominationsService.AddNomination(Context.User, movie.Title, movie.imdbID);
+                        // If this isnt the right one, specify the year and change the nomination obj
+                        _nominationsService.AddNomination(Context.User, movie.Title, movie.ImdbId);
                         await ReplyAsync("Thanks for nominating!");
                     }
                     else
@@ -115,7 +115,7 @@ namespace dbot.CommandModules
             Console.WriteLine($"Got nomination request for {id}");
             if (!_votingService.VotingOpen())
             {
-                var mov = await _omdbService.GetItemByID(id);
+                var mov = await _omdbService.GetItemById(id);
 
                 if (mov.Title.Equals(null))
                 {
@@ -124,13 +124,13 @@ namespace dbot.CommandModules
                 }
                 else
                 {
-                    if(!_nominationsService.IsNominated(mov.imdbID))
+                    if(!_nominationsService.IsNominated(mov.ImdbId))
                     {
                         Console.WriteLine($"Adding nominated movie \"{id}\"");
                         await ReplyAsync(mov.ToString());
 
-                        //if this isnt the right one, specify the year and change the nomination
-                        _nominationsService.AddNomination(Context.User, mov.Title, mov.imdbID);
+                        // If this isnt the right one, specify the year and change the nomination
+                        _nominationsService.AddNomination(Context.User, mov.Title, mov.ImdbId);
                         await ReplyAsync("Thanks for nominating!");
                     }
                     else
@@ -153,7 +153,7 @@ namespace dbot.CommandModules
         public async Task ViewNominationsAsync()
         {
             Console.WriteLine("Got request to display nominations");
-            string result = _nominationsService.viewNominations();
+            string result = _nominationsService.ViewNominations();
             await ReplyAsync(result);
 
         }
@@ -168,8 +168,8 @@ namespace dbot.CommandModules
             if(_nominationsService.UserHasNomination(Context.User, out nomination))
             {
                 _nominationsService.DeleteNominationForUser(Context.User);
-                Console.WriteLine($"Deleted {nomination.movName} from nominations (nominated by {Context.User})");
-                await ReplyAsync($"Deleted {nomination.movName} from nominations!");
+                Console.WriteLine($"Deleted {nomination.Name} from nominations (nominated by {Context.User})");
+                await ReplyAsync($"Deleted {nomination.Name} from nominations!");
             }
             else
             {

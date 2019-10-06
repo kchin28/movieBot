@@ -25,12 +25,15 @@ namespace dbot.CommandModules
         public async Task Default()
         {
             var modules = _commandService.Modules;
+
             var sb = new StringBuilder();
             sb.AppendLine("Commands:");
+
             foreach(var module in modules)
             {
                 sb.AppendLine($"**{module.Name}**: {module.Summary}");
             }
+
             await ReplyAsync(sb.ToString());
         }
         
@@ -47,6 +50,7 @@ namespace dbot.CommandModules
 
                 var sb = new StringBuilder();
                 sb.AppendLine($"Usage information for **{module.Name}**");
+
                 foreach(var command in module.Commands)
                 {
                     sb.AppendLine($"**{command.Name}**: {command.Summary}");
@@ -54,6 +58,7 @@ namespace dbot.CommandModules
                     //Line separation for readability
                     sb.AppendLine();
                 }
+                
                 await ReplyAsync(sb.ToString());
             }
             catch

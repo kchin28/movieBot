@@ -10,56 +10,58 @@ namespace dbot.Services
     {
         private static ConcurrentDictionary<IUser, Nomination> currNoms = new ConcurrentDictionary<IUser, Nomination>();
 
-        public void AddNomination(IUser userName,string title, string imdbID) 
+        public void AddNomination(IUser userName,string title, string imdbId) 
         {
+                // Only keeps last nomination
+                var newNom = new Nomination(title, GetNextId(),imdbId);
 
-                //only keeps last nomination
-                var newNom = new Nomination(title, getNextId(),imdbID);
                 currNoms.AddOrUpdate(userName, newNom,
                     (k, v) =>
                     {
-                        v.imdb    = newNom.imdb;
-                        v.movName = newNom.movName;
+                        v.ImdbId  = newNom.ImdbId;
+                        v.Name    = newNom.Name;
                         return v;
                     });
         }
 
         public bool IsNominated(string imdbId)
         {
-            var nominations = getNominations();
-            return nominations.Where(n => n.imdb == imdbId).Any();
+            var nominations = GetNominations();
+            return nominations.Where(n => n.ImdbId == imdbId).Any();
         }
 
-        public string viewNominations() {
-            var current = getNominations();
-            var movies = current.Select(x => x.movName);
+        public string ViewNominations()
+        {
+            var current = GetNominations();
+            var movies = current.Select(x => x.Name);
             var sb = new StringBuilder();
 
-            foreach (var movie in movies) {
+            foreach (var movie in movies) 
+            {
                 sb.AppendLine(movie);
             }
             return sb.ToString();
         } 
 
-        public string viewNominationsWithId()
+        public string ViewNominationsWithId()
         {
-            var nominations = getNominations();
-
+            var nominations = GetNominations();
             var sb = new StringBuilder();
 
             foreach(var nomination in nominations)
             {
-                sb.AppendLine($"{nomination.id}. {nomination.movName}");
+                sb.AppendLine($"{nomination.VotingId}. {nomination.Name}");
             }
+
             return sb.ToString();
         }
 
-        public IEnumerable<Nomination> getNominations()
+        public IEnumerable<Nomination> GetNominations()
         {
-            return currNoms.Select(x => x.Value).OrderBy(x => x.id);
+            return currNoms.Select(x => x.Value).OrderBy(x => x.VotingId);
         }
 
-        public void clearNominations()
+        public void ClearNominations()
         {
             currNoms.Clear();
         }
@@ -72,6 +74,7 @@ namespace dbot.Services
         public void DeleteNominationForUser(IUser user)
         {
             Nomination nomination;
+
             if(currNoms.TryRemove(user, out nomination))
             {
                 FixNominationIds();
@@ -80,36 +83,35 @@ namespace dbot.Services
 
         private void FixNominationIds()
         {
-            //Grab the entire nominations list
+            // Grab the entire nominations list
             var nominations = currNoms.ToArray();
-            //Re-number from 1 to n of remaining nominations
+            // Re-number from 1 to n of remaining nominations
             int id = 1;
+
             foreach(var nomination in nominations)
             {
-                nomination.Value.id = id++;
+                nomination.Value.VotingId = id++;
                 currNoms.AddOrUpdate(nomination.Key, nomination.Value, (k, v) => { return nomination.Value; });
             }
         }
 
-        private int getNextId()
+        private int GetNextId()
         {
             return currNoms.Count() + 1;
         }
-        //cannot delete nominations only replace bc the id's won't be in order
-        //no verification on omdb
     }
 
     public class Nomination 
     {
-        public string movName;
-        public int id;
-        public string imdb;
+        public string Name;
+        public int VotingId;
+        public string ImdbId;
 
-        public Nomination(string movie, int num, string imdbID) 
+        public Nomination(string name, int votingId, string imdbId) 
         {
-            movName = movie;
-            id = num;
-            imdb = imdbID;
+            Name = name;
+            VotingId = votingId;
+            ImdbId = imdbId;
         }
 
     }
