@@ -115,7 +115,7 @@ namespace dbot.CommandModules
             Console.WriteLine($"Got nomination request for {id}");
             if (!_votingService.VotingOpen())
             {
-                var mov = await _omdbService.GetItemById(id);
+                var mov = await _omdbService.GetMovieById(id);
 
                 if (mov.Title.Equals(null))
                 {

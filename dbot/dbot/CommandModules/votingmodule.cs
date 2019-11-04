@@ -79,7 +79,7 @@ namespace dbot.CommandModules
                 sb.AppendLine($"The winner is: {winner.Movie.Name}");
 
                 await ReplyAsync(sb.ToString());
-                var movie = await _omdbService.GetMovieByTitle(winner.Movie.Name);
+                var movie = await _omdbService.GetMovieById(winner.Movie.ImdbId);
                 await ReplyAsync(movie.ToString());
                 
             }
