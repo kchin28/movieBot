@@ -2,26 +2,33 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using dbot.Models;
+using dbot.Persistence;
 using Discord;
 
 namespace dbot.Services
 {
     public class NominationsService
     {
-        private static ConcurrentDictionary<IUser, Nomination> currNoms = new ConcurrentDictionary<IUser, Nomination>();
+        private readonly IRepository<User, Nomination> currNoms;
 
-        public void AddNomination(IUser userName,string title, string imdbId) 
+        public NominationsService(IRepository<User, Nomination> nominations)
         {
-                // Only keeps last nomination
-                var newNom = new Nomination(title, GetNextId(),imdbId);
+            currNoms = nominations;
+        }
 
-                currNoms.AddOrUpdate(userName, newNom,
-                    (k, v) =>
-                    {
-                        v.ImdbId  = newNom.ImdbId;
-                        v.Name    = newNom.Name;
-                        return v;
-                    });
+        public void AddNomination(IUser user, string title, string imdbId) 
+        {
+            // Only keeps last nomination
+            var newNom = new Nomination(title, GetNextId(),imdbId);
+
+            currNoms.AddOrUpdate(new User(user), newNom,
+                (k, v) =>
+                {
+                    v.ImdbId  = newNom.ImdbId;
+                    v.Name    = newNom.Name;
+                    return v;
+                });
         }
 
         public bool IsNominated(string imdbId)
@@ -68,14 +75,12 @@ namespace dbot.Services
 
         public bool UserHasNomination(IUser user, out Nomination nomination)
         {
-            return currNoms.TryGetValue(user, out nomination);
+            return currNoms.TryGetValue(new User(user), out nomination);
         }
 
         public void DeleteNominationForUser(IUser user)
         {
-            Nomination nomination;
-
-            if(currNoms.TryRemove(user, out nomination))
+            if (currNoms.TryRemove(new User(user), out _))
             {
                 FixNominationIds();
             }
