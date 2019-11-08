@@ -119,5 +119,7 @@ namespace dbot.Services
             ImdbId = imdbId;
         }
 
+        public Nomination() { }
+
     }
 }
