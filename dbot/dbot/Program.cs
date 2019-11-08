@@ -7,8 +7,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using dbot.Services;
 using dbot.CommandModules;
-using dbot.Persistence;
-using dbot.Models;
 
 namespace dbot
 {
@@ -31,8 +29,8 @@ namespace dbot
             commands = new CommandService();
             serviceCollection = new ServiceCollection();
           
-            serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>("nominations.xml")));
-            serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>("votes.xml")));
+            serviceCollection.AddSingleton(new NominationsService());
+            serviceCollection.AddSingleton(new VotingService());
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
             serviceCollection.AddSingleton(commands);
 

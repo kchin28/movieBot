@@ -1,6 +1,4 @@
 
-using dbot.Models;
-using dbot.Persistence;
 using Discord;
 using System;
 using System.Collections.Concurrent;
@@ -17,20 +15,20 @@ namespace dbot.Services
 
     public class VotingService
     {
-        private readonly IRepository<User, int> _votes;
+        private ConcurrentDictionary<IUser, int> _votes;
 
         private bool _votingOpen;
 
-        public VotingService(IRepository<User, int> votes)
+        public VotingService()
         {
             _votingOpen = false;
-            _votes = votes;
+            _votes = new ConcurrentDictionary<IUser, int>();
         }
 
         public void Vote(IUser user, int movieId)
         {
             // Always update with newest movieId
-            _votes.AddOrUpdate(new User(user), movieId,
+            _votes.AddOrUpdate(user, movieId,
                 (key, movie) =>
                 {
                     return movieId;
@@ -88,7 +86,7 @@ namespace dbot.Services
             return false;
         }
 
-        public IEnumerable<User> GetVoters()
+        public IEnumerable<IUser> GetVoters()
         {
             return _votes.Keys;
         }
