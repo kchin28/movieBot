@@ -10,6 +10,8 @@ namespace dbot.Models
         public string Username;
         public string Discriminator;
 
+        public User() { }
+
         public User(IUser user)
         {
             Username = user.Username;

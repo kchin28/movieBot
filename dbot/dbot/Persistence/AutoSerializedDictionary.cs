@@ -23,6 +23,25 @@ namespace dbot.Persistence
         TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory);
     }
 
+    public class Entry<TKey, TValue>
+    {
+        public TKey key;
+        public TValue value;
+
+        public Entry() { }
+
+        public Entry(KeyValuePair<TKey, TValue> pair)
+        {
+            key = pair.Key;
+            value = pair.Value;
+        }
+
+        public KeyValuePair<TKey, TValue> ToPair()
+        {
+            return new KeyValuePair<TKey, TValue>(key, value);
+        }
+    }
+
     public class AutoSerializedDictionary<TKey, TValue> : IRepository<TKey, TValue>
     {
         private readonly Lazy<ConcurrentDictionary<TKey, TValue>> _dictionary;
@@ -36,7 +55,7 @@ namespace dbot.Persistence
 
         private void StartSerialization()
         {
-            Task.Factory.StartNew(Serialize, TaskCreationOptions.AttachedToParent);
+            Task.Run(Serialize);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -51,8 +70,8 @@ namespace dbot.Persistence
                 }
                 using (var writer = new StreamWriter(_filepath, false))
                 {
-                    var serializer = new XmlSerializer(typeof(KeyValuePair<TKey, TValue>[]));
-                    serializer.Serialize(writer, _dictionary.Value.ToArray());
+                    var serializer = new XmlSerializer(typeof(Entry<TKey, TValue>[]));
+                    serializer.Serialize(writer, _dictionary.Value.Select(p => new Entry<TKey, TValue>(p)).ToArray());
                 }
             }
             catch (UnauthorizedAccessException e)
@@ -71,9 +90,9 @@ namespace dbot.Persistence
             {
                 using (var reader = new StreamReader(_filepath))
                 {
-                    var serializer = new XmlSerializer(typeof(KeyValuePair<TKey, TValue>[]));
-                    var values = (KeyValuePair<TKey, TValue>[]) serializer.Deserialize(reader);
-                    return new ConcurrentDictionary<TKey, TValue>(values);
+                    var serializer = new XmlSerializer(typeof(Entry<TKey, TValue>[]));
+                    var values = (Entry<TKey, TValue>[]) serializer.Deserialize(reader);
+                    return new ConcurrentDictionary<TKey, TValue>(values.Select(e => e.ToPair()));
                 }
             }
             catch (Exception e) when (e is FileNotFoundException || e is IOException || e is DirectoryNotFoundException)
