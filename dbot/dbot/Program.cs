@@ -25,14 +25,16 @@ namespace dbot
         {
             var discordToken = TokenManager.GetToken(TokenKey.DiscordToken);
             var omdbToken = TokenManager.GetToken(TokenKey.OMDBToken);
+            var nominationsFile = TokenManager.GetToken(TokenKey.NominationsFile);
+            var votesFile = TokenManager.GetToken(TokenKey.VotesFile);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();
             commands = new CommandService();
             serviceCollection = new ServiceCollection();
           
-            serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>("nominations.xml")));
-            serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>("votes.xml")));
+            serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>(nominationsFile)));
+            serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
             serviceCollection.AddSingleton(commands);
 

@@ -82,6 +82,10 @@ namespace dbot.Persistence
             {
                 Console.WriteLine($"Failed to serialize dictionary: {e}");
             }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unexpected error: {e}");
+            }
         }
 
         private ConcurrentDictionary<TKey, TValue> Deserialize()
@@ -104,6 +108,11 @@ namespace dbot.Persistence
             {
                 // This should be closer to the exception source (XmlSerializer.Deserialize), but meh.
                 Console.WriteLine($"Failed to read file: {e}");
+                return new ConcurrentDictionary<TKey, TValue>();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unexpected error: {e}");
                 return new ConcurrentDictionary<TKey, TValue>();
             }
         }
