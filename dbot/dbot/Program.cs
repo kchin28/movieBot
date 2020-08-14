@@ -23,9 +23,15 @@ namespace dbot
 
         public async Task MainAsync(string[] args)
         {
-            var tokenManager = args.Length == 0
-                ? new TokenManager()
-                : new TokenManager(args[0]);
+            TokenManager tokenManager;
+            if (args.Length == 0)
+            {
+                tokenManager = new TokenManager();
+            }
+            else
+            {
+                tokenManager = new TokenManager(args[0]);
+            }
 
             var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
             var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
