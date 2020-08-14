@@ -14,7 +14,7 @@ namespace dbot
         VotesFile
     }
 
-    static class TokenManager
+    class TokenManager
     {
         private static readonly Dictionary<TokenKey, string> tokens = new Dictionary<TokenKey, string>()
         {
@@ -23,13 +23,24 @@ namespace dbot
             { TokenKey.NominationsFile, "nominationsFile" },
             { TokenKey.VotesFile, "votesFile" }
         };
-    #if DEBUG
-        private static readonly string _secretsUri = "debugsecrets.json";
-    #else
-        private static readonly string _secretsUri = "secrets.json";
-    #endif
-        
-        public static string GetToken(TokenKey tok)
+
+        private readonly string _secretsUri;
+
+        public TokenManager(string secretsUri)
+        {
+            _secretsUri = secretsUri;
+        }
+
+        public TokenManager()
+        {
+        #if DEBUG
+            _secretsUri = "debugsecrets.json";
+        #else
+            _secretsUri = "secrets.json";
+        #endif
+        }
+
+        public string GetToken(TokenKey tok)
         {
             string tokenKey = tokens[tok];
 

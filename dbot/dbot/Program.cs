@@ -18,15 +18,19 @@ namespace dbot
         private DiscordSocketClient client;
         private IServiceProvider services;
         private IServiceCollection serviceCollection;
-        static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
+        static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
 
 
-        public async Task MainAsync()
+        public async Task MainAsync(string[] args)
         {
-            var discordToken = TokenManager.GetToken(TokenKey.DiscordToken);
-            var omdbToken = TokenManager.GetToken(TokenKey.OMDBToken);
-            var nominationsFile = TokenManager.GetToken(TokenKey.NominationsFile);
-            var votesFile = TokenManager.GetToken(TokenKey.VotesFile);
+            var tokenManager = args.Length == 0
+                ? new TokenManager()
+                : new TokenManager(args[0]);
+
+            var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
+            var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
+            var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
+            var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();
