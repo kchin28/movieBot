@@ -108,7 +108,7 @@ namespace dbot.CommandModules
         [Command("id")]
         [Name("By IMDB Id")]
         [Summary("Nominate a movie by IMDB id")]
-        [Remarks("Usage: !nominate <id>")]
+        [Remarks("Usage: !nominate id <id>")]
         [Priority(1)]
         public async Task NominateById(string id)
         {
