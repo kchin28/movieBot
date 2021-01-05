@@ -67,7 +67,7 @@ namespace dbot.CommandModules
         [Command] 
         [Name("By Name and Year")]
         [Summary("Nominate a movie by name and year")]
-        [Remarks("Usage: !nominate <movie name> <year>")]
+        [Remarks("Usage: !nominate \"<movie name>\" <year>")]
         public async Task AddNominationWithYearASync(string name, int year)
         {
             Console.WriteLine($"Got nomination request for \"{name}\", {year}");
