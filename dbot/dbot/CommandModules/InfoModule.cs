@@ -28,10 +28,10 @@ namespace dbot.CommandModules
             await ReplyAsync(movie.ToString());
         }
 
-        [Command]
+        [Command("year")]
         [Name("By Year")]
         [Summary("Searches for information of a movie by name and year")]
-        [Remarks("Usage: !info \"<movie name>\" <year>")]
+        [Remarks("Usage: !info year \"<movie name>\" <year>")]
         public async Task InfoByYear(string movieName, int year)
         {
             var movie = await _omdbService.GetMovieByTitleYear(movieName, year);
