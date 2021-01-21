@@ -162,7 +162,7 @@ namespace dbot.CommandModules
                 }
 
 
-                if (!noms.Any())    
+                if (!noms.Any())
                 {
                     await ReplyAsync($"Unexpected vote for {mov}, please try again!");
                 }
