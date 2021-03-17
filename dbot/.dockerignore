@@ -1,0 +1,8 @@
+# secrets
+**/secrets.json
+**/debugsecrets.json
+
+# build output
+**/bin
+**/obj
+**/publish
