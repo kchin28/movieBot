@@ -9,11 +9,16 @@ using dbot.Services;
 using dbot.CommandModules;
 using dbot.Persistence;
 using dbot.Models;
+using dbot.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace dbot
 {
     class Program
     {
+        private const string DBCONN = "Data Source=movieBot.db";
+
         private CommandService commands;
         private DiscordSocketClient client;
         private IServiceProvider services;
@@ -43,12 +48,25 @@ namespace dbot
             commands = new CommandService();
             serviceCollection = new ServiceCollection();
           
+            serviceCollection.AddDbContext<MovieBotContext>(options =>
+                options.UseSqlite(DBCONN));
             serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>(nominationsFile)));
             serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
             serviceCollection.AddSingleton(commands);
 
             services = serviceCollection.BuildServiceProvider();
+
+            try
+            {
+                var context = services.GetRequiredService<MovieBotContext>();
+                DbInitializer.Initialize(context);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
             await InstallCommands();
 
             await client.LoginAsync(Discord.TokenType.Bot, discordToken);
