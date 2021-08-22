@@ -273,3 +273,6 @@ debugsecrets.json
 
 #vscode
 .vscode
+
+#db files
+*.db
