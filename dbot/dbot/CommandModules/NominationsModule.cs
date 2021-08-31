@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using dbot.Services;
 using Discord;
@@ -17,19 +18,35 @@ namespace dbot.CommandModules
         private readonly OmdbService _omdbService;
         private readonly VotingService _votingService;
 
+        private readonly Regex _yearPattern;
+
         public NominationsModule(NominationsService ns, OmdbService os, VotingService vs)
         {
             _nominationsService = ns;
             _omdbService = os;
             _votingService = vs;
+            _yearPattern = new Regex(@"(?<title>[\s\S]+) \((?<year>\d+)\)$", RegexOptions.Compiled);
         }
 
         [Command]
         [Name("By Name")]
-        [Summary("Nominate a movie by name")]
-        [Remarks("Usage: !nominate <movie name>")]
+        [Summary("Nominate a movie by name with optional year")]
+        [Remarks("Usage: !nominate <movie name> (<year>)")]
         [Priority(1)]
-        public async Task AddNominationASync([Remainder]string name)
+        public async Task AddNominationASync([Remainder]string command)
+        {
+            if(CommandHasYear(command))
+            {
+                (var title, var year) = GetTitleAndYear(command);
+                await AddNominationWithYearASync(title, year);
+            }
+            else
+            {
+                await AddNominationWithoutAYearAsync(command);
+            }
+        }
+
+        public async Task AddNominationWithoutAYearAsync(string name)
         {
             Console.WriteLine($"Got nomination request for \"{name}\"");
             if (!_votingService.VotingOpen())
@@ -62,7 +79,7 @@ namespace dbot.CommandModules
             else
             {
                 await ReplyAsync("Cannot nominate during open voting session");
-            }      
+            }
         }
 
         [Command("year")] 
@@ -179,6 +196,18 @@ namespace dbot.CommandModules
                 await ReplyAsync("You do not have an open nomination!");
             }
         }
+        
+        private bool CommandHasYear(string command)
+        {
+            return _yearPattern.Matches(command).Count > 0;
+        }
 
+        private (string, int) GetTitleAndYear(string command)
+        {
+            var matches = _yearPattern.Matches(command);
+
+            return (matches[0].Groups["title"].Value, int.Parse(matches[0].Groups["year"].Value));
+        }
     }
-}   
+
+}
