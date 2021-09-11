@@ -14,7 +14,7 @@ namespace dbot.Models
       public string Year { get; set; }
       public string ImdbId { get; set; }
       public User User {get;set;}
-      public string NominatedBy => User.Username;
+    //  public string NominatedBy => User.Username;
 
       public Nomination(string name, int votingId, string imdbId,User user) 
       {

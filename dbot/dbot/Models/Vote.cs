@@ -12,7 +12,7 @@ namespace dbot.Models
         public Nomination Nomination {get;set;}
         public User User {get;set;}
 
-        public string Username => User.Username;
+     //   public string Username => User.Username;
 
         public Vote() {}
 

@@ -50,7 +50,6 @@ namespace dbot
           
             serviceCollection.AddDbContext<MovieBotContext>(options => options.UseSqlite(DBCONN));
             serviceCollection.AddScoped<NominationsService>();
-          //  serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
             serviceCollection.AddScoped<VotingService>();
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
             serviceCollection.AddSingleton(commands);

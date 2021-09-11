@@ -23,7 +23,7 @@ namespace dbot.Services
             // Only keeps last nomination
             var newNom = new Nomination(title, GetNextId(),imdbId,new User(user));
 
-            var currNom = _context.WeeklyNominations.Where(x => x.NominatedBy == user.Username).FirstOrDefault();
+            var currNom = _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault();
 
             if(currNom==null)
             {
@@ -94,14 +94,14 @@ namespace dbot.Services
 
         public bool UserHasNomination(IUser user, out Nomination nomination)
         {
-            var currentUserNom = _context.WeeklyNominations.Where(x => x.NominatedBy == user.Username).FirstOrDefault(); 
+            var currentUserNom = _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault(); 
             nomination = currentUserNom;
             return currentUserNom == null;
         }
 
         public void DeleteNominationForUser(IUser user)
         {
-            var nom = _context.WeeklyNominations.Where(x => x.NominatedBy == user.Username).FirstOrDefault();
+            var nom = _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault();
             if(nom!=null)
             {
                 _context.WeeklyNominations.Remove(nom);

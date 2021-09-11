@@ -37,7 +37,7 @@ namespace dbot.Services
             }
 
             var newVote = new Vote(findNomination,new User(user));
-            var currVote = _context.WeeklyVotes.Where(x => x.Username == user.Username).FirstOrDefault();
+            var currVote = _context.WeeklyVotes.Where(x => x.User.Username == user.Username).FirstOrDefault();
 
             if(currVote==null)
             {
