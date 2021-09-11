@@ -9,16 +9,20 @@ namespace dbot.Data
     {
         public static void Initialize(MovieBotContext context)
         {
-            context.Database.EnsureCreated();
+            var created = context.Database.EnsureCreated();
 
-            if (context.WeeklyNominations.Any())
+            if (created)
             {
-                return;   // DB has been seeded
+                Console.WriteLine("db exists");
             }
-            else 
+            else
             {
-                
+                Console.WriteLine("db did not exist. Creating..");
             }
+
+           //none of the tables need to be seeded at initial creation / before a weekly session
+           //tables can/should be seeded if db was lost during an open vote/open nomination session -- could seed from autoDictionary xml backup or from creeping discord channel?
+           //eventually db will hold the running list of nominations and winners. These two tables holds more valuable info, might be able to seed from creeping discord channels? 
         }
     }
 }

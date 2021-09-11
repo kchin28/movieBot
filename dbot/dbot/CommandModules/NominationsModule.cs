@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using dbot.Services;
+using dbot.Models;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using dbot.Data;
 
 namespace dbot.CommandModules
 {
@@ -13,15 +15,17 @@ namespace dbot.CommandModules
     [Summary("Commands for nominating movies")]
     public class NominationsModule : ModuleBase
     {
-        private readonly NominationsService _nominationsService;
-        private readonly OmdbService _omdbService;
-        private readonly VotingService _votingService;
+        private NominationsService _nominationsService;
+        private  OmdbService _omdbService;
+        private  VotingService _votingService;
+        
 
         public NominationsModule(NominationsService ns, OmdbService os, VotingService vs)
         {
             _nominationsService = ns;
             _omdbService = os;
             _votingService = vs;
+            
         }
 
         [Command]
@@ -31,6 +35,7 @@ namespace dbot.CommandModules
         [Priority(1)]
         public async Task AddNominationASync([Remainder]string name)
         {
+            try {
             Console.WriteLine($"Got nomination request for \"{name}\"");
             if (!_votingService.VotingOpen())
             {
@@ -62,7 +67,9 @@ namespace dbot.CommandModules
             else
             {
                 await ReplyAsync("Cannot nominate during open voting session");
-            }      
+            }     
+            } catch (Exception ex) {Console.WriteLine("Could not add Nomination: "+ ex.Message);}
+
         }
 
         [Command("year")] 

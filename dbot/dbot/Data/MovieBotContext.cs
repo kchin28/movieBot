@@ -8,14 +8,19 @@ namespace dbot.Data
         public MovieBotContext(DbContextOptions<MovieBotContext> options) : base(options)
         {
         }
-
+        public DbSet<User> Users {get;set;}
         public DbSet<Nomination> WeeklyNominations { get; set; }
+        public DbSet<Vote> WeeklyVotes {get;set;}
+        public DbSet<Session> Sessions {get;set;}
+        //public DbSet<Movie> Movies {get;set;}
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Nomination>().ToTable("Nomination");
-          //  modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
-         //   modelBuilder.Entity<Student>().ToTable("Student");
+            modelBuilder.Entity<Nomination>().ToTable("WeeklyNominations");
+            modelBuilder.Entity<Vote>().ToTable("WeeklyVotes");
+            modelBuilder.Entity<Session>().ToTable("Sessions");
+            modelBuilder.Entity<User>().ToTable("Users");
         }
 
     }

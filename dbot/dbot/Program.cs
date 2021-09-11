@@ -40,23 +40,24 @@ namespace dbot
 
             var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
             var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
-            var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
-            var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
+         //   var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
+     //       var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();
             commands = new CommandService();
             serviceCollection = new ServiceCollection();
           
-            serviceCollection.AddDbContext<MovieBotContext>(options =>
-                options.UseSqlite(DBCONN));
-            serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>(nominationsFile)));
-            serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
+            serviceCollection.AddDbContext<MovieBotContext>(options => options.UseSqlite(DBCONN));
+            serviceCollection.AddScoped<NominationsService>();
+          //  serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
+            serviceCollection.AddScoped<VotingService>();
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
             serviceCollection.AddSingleton(commands);
 
             services = serviceCollection.BuildServiceProvider();
 
+            //check for db and create it if it does not exist
             try
             {
                 var context = services.GetRequiredService<MovieBotContext>();
@@ -64,7 +65,7 @@ namespace dbot
             }
             catch (Exception ex)
             {
-                
+                Console.WriteLine("Something went wrong during DB initialize: " + ex.Message);
             }
 
             await InstallCommands();

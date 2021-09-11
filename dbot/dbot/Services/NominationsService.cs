@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using dbot.Data;
 using dbot.Models;
 using dbot.Persistence;
 using Discord;
@@ -10,36 +11,49 @@ namespace dbot.Services
 {
     public class NominationsService
     {
-        private readonly IRepository<User, Nomination> currNoms;
+        private MovieBotContext _context;
 
-        public NominationsService(IRepository<User, Nomination> nominations)
+        public NominationsService(MovieBotContext context)
         {
-            currNoms = nominations;
+            _context = context;
         }
-
+        
         public void AddNomination(IUser user, string title, string imdbId) 
         {
             // Only keeps last nomination
-            var newNom = new Nomination(title, GetNextId(),imdbId);
+            var newNom = new Nomination(title, GetNextId(),imdbId,new User(user));
 
-            currNoms.AddOrUpdate(new User(user), newNom,
-                (k, v) =>
-                {
-                    v.ImdbId  = newNom.ImdbId;
-                    v.Name    = newNom.Name;
-                    return v;
-                });
+            var currNom = _context.WeeklyNominations.Where(x => x.NominatedBy == user.Username).FirstOrDefault();
+
+            if(currNom==null)
+            {
+                _context.WeeklyNominations.Add(newNom);
+                _context.SaveChanges();
+            }
+            else
+            {
+                currNom.ImdbId= newNom.ImdbId;
+                currNom.Name = newNom.Name;
+                currNom.VotingID = newNom.VotingID;
+                _context.Update(currNom);
+                _context.SaveChanges();
+            }
         }
 
         public bool IsNominated(string imdbId)
         {
             var nominations = GetNominations();
+            if(nominations == null)
+                return false;
             return nominations.Where(n => n.ImdbId == imdbId).Any();
         }
 
         public string ViewNominations()
         {
             var current = GetNominations();
+            if(current == null)
+                return string.Empty;
+
             var movies = current.Select(x => x.Name);
             var sb = new StringBuilder();
 
@@ -53,11 +67,15 @@ namespace dbot.Services
         public string ViewNominationsWithId()
         {
             var nominations = GetNominations();
+            
+            if(nominations == null)
+                return string.Empty;
+        
             var sb = new StringBuilder();
 
             foreach(var nomination in nominations)
             {
-                sb.AppendLine($"{nomination.VotingId}. {nomination.Name}");
+                sb.AppendLine($"{nomination.VotingID}. {nomination.Name}");
             }
 
             return sb.ToString();
@@ -65,23 +83,29 @@ namespace dbot.Services
 
         public IEnumerable<Nomination> GetNominations()
         {
-            return currNoms.Select(x => x.Value).OrderBy(x => x.VotingId);
+            return _context.WeeklyNominations.Select(x => x);
         }
 
         public void ClearNominations()
         {
-            currNoms.Clear();
+            _context.WeeklyNominations.RemoveRange(_context.WeeklyNominations);
+            _context.SaveChanges();
         }
 
         public bool UserHasNomination(IUser user, out Nomination nomination)
         {
-            return currNoms.TryGetValue(new User(user), out nomination);
+            var currentUserNom = _context.WeeklyNominations.Where(x => x.NominatedBy == user.Username).FirstOrDefault(); 
+            nomination = currentUserNom;
+            return currentUserNom == null;
         }
 
         public void DeleteNominationForUser(IUser user)
         {
-            if (currNoms.TryRemove(new User(user), out _))
+            var nom = _context.WeeklyNominations.Where(x => x.NominatedBy == user.Username).FirstOrDefault();
+            if(nom!=null)
             {
+                _context.WeeklyNominations.Remove(nom);
+                _context.SaveChanges();
                 FixNominationIds();
             }
         }
@@ -89,37 +113,20 @@ namespace dbot.Services
         private void FixNominationIds()
         {
             // Grab the entire nominations list
-            var nominations = currNoms.ToArray();
+            var nominations = _context.WeeklyNominations.ToArray();
             // Re-number from 1 to n of remaining nominations
             int id = 1;
 
             foreach(var nomination in nominations)
             {
-                nomination.Value.VotingId = id++;
-                currNoms.AddOrUpdate(nomination.Key, nomination.Value, (k, v) => { return nomination.Value; });
+                nomination.VotingID = id++;
             }
+            _context.SaveChanges();
         }
 
         private int GetNextId()
         {
-            return currNoms.Count() + 1;
+            return _context.WeeklyNominations.Count() + 1;
         }
-    }
-
-    public class Nomination 
-    {
-        public string Name;
-        public int VotingId;
-        public string ImdbId;
-
-        public Nomination(string name, int votingId, string imdbId) 
-        {
-            Name = name;
-            VotingId = votingId;
-            ImdbId = imdbId;
-        }
-
-        public Nomination() { }
-
     }
 }
