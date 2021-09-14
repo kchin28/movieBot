@@ -23,7 +23,10 @@ namespace dbot.Persistence
         {
             return _context.WeeklyNominations.FirstOrDefault(x => x.VotingID == movieId);
         }
-
+        public Nomination FindNomination(IUser user)
+        {
+            return _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault();
+        }
         public Vote FindVote(IUser user)
         {
             return _context.WeeklyVotes.Where(x => x.User.Username == user.Username).FirstOrDefault();
@@ -35,10 +38,8 @@ namespace dbot.Persistence
             _context.SaveChanges();
         }
 
-        public void UpdateNominationInVote(Vote vote, Nomination newNomination)
+        public void UpdateNominationInVote(Vote vote)
         {
-            vote.Nomination = newNomination;
-            _context.Update(vote);
             _context.SaveChanges();
         }
 
@@ -76,6 +77,44 @@ namespace dbot.Persistence
         public void ClearVotes()
         {
             _context.WeeklyVotes.RemoveRange(_context.WeeklyVotes);
+            _context.SaveChanges();
+        }
+
+        public void AddNomination(Nomination newNom)
+        {
+             _context.WeeklyNominations.Add(newNom);
+            _context.SaveChanges();
+        }
+
+        public void UpdateNomination(Nomination currNom)
+        {
+            _context.SaveChanges();
+        }
+
+        public List<Nomination> GetNominations()
+        {
+            return _context.WeeklyNominations.Select(x => x).ToList();
+        }
+
+        public void ClearNominations()
+        {
+            _context.WeeklyNominations.RemoveRange(_context.WeeklyNominations);
+            _context.SaveChanges();
+        }
+
+        public Nomination GetNomination(IUser user)
+        {
+            return _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault(); 
+        }
+
+        public void DeleteNomination(Nomination nom)
+        {
+            _context.WeeklyNominations.Remove(nom);
+            _context.SaveChanges();
+        }
+
+        public void UpdateVotingIDs(IEnumerable<Nomination> nominations)
+        {
             _context.SaveChanges();
         }
     }

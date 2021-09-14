@@ -11,11 +11,12 @@ namespace dbot.Services
 {
     public class NominationsService
     {
-        private MovieBotContext _context;
+        //private MovieBotContext _context;
+        private IDbManager _dbManager;
 
         public NominationsService(MovieBotContext context)
         {
-            _context = context;
+            _dbManager = new DbManager(context);
         }
         
         public void AddNomination(IUser user, string title, string imdbId) 
@@ -23,20 +24,19 @@ namespace dbot.Services
             // Only keeps last nomination
             var newNom = new Nomination(title, GetNextId(),imdbId,new User(user));
 
-            var currNom = _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault();
+            var currNom = _dbManager.FindNomination(user);
 
             if(currNom==null)
             {
-                _context.WeeklyNominations.Add(newNom);
-                _context.SaveChanges();
+                _dbManager.AddNomination(newNom);
             }
             else
             {
                 currNom.ImdbId= newNom.ImdbId;
                 currNom.Name = newNom.Name;
                 currNom.VotingID = newNom.VotingID;
-                _context.Update(currNom);
-                _context.SaveChanges();
+
+               _dbManager.UpdateNomination(currNom);
             }
         }
 
@@ -83,29 +83,27 @@ namespace dbot.Services
 
         public IEnumerable<Nomination> GetNominations()
         {
-            return _context.WeeklyNominations.Select(x => x);
+            return _dbManager.GetNominations().AsEnumerable();
         }
 
         public void ClearNominations()
         {
-            _context.WeeklyNominations.RemoveRange(_context.WeeklyNominations);
-            _context.SaveChanges();
+            _dbManager.ClearNominations();
         }
 
         public bool UserHasNomination(IUser user, out Nomination nomination)
         {
-            var currentUserNom = _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault(); 
+            var currentUserNom = _dbManager.GetNomination(user);
             nomination = currentUserNom;
             return currentUserNom == null;
         }
 
         public void DeleteNominationForUser(IUser user)
         {
-            var nom = _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault();
+            var nom = _dbManager.GetNomination(user);
             if(nom!=null)
             {
-                _context.WeeklyNominations.Remove(nom);
-                _context.SaveChanges();
+                _dbManager.DeleteNomination(nom);
                 FixNominationIds();
             }
         }
@@ -113,7 +111,7 @@ namespace dbot.Services
         private void FixNominationIds()
         {
             // Grab the entire nominations list
-            var nominations = _context.WeeklyNominations.ToArray();
+            var nominations = _dbManager.GetNominations().ToArray();
             // Re-number from 1 to n of remaining nominations
             int id = 1;
 
@@ -121,12 +119,12 @@ namespace dbot.Services
             {
                 nomination.VotingID = id++;
             }
-            _context.SaveChanges();
+            _dbManager.UpdateVotingIDs(nominations);
         }
 
         private int GetNextId()
         {
-            return _context.WeeklyNominations.Count() + 1;
+            return _dbManager.GetNominations().Count() + 1;
         }
     }
 }

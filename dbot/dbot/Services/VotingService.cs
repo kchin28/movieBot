@@ -35,6 +35,7 @@ namespace dbot.Services
 
             if(findNomination == null)
             {
+                Console.WriteLine("Attempting to vote for non existient Nomination");
                 return;
             }
 
@@ -47,7 +48,8 @@ namespace dbot.Services
             }
             else
             {
-                _dbManager.UpdateNominationInVote(currVote,findNomination);
+                currVote.Nomination = findNomination;
+                _dbManager.UpdateNominationInVote(currVote);
             }
         }
 
