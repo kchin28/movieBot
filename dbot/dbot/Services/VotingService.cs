@@ -18,18 +18,20 @@ namespace dbot.Services
 
     public class VotingService
     {
-        private MovieBotContext _context;
+       // private MovieBotContext _context;
+
+        private IDbManager _dbManager;
         private bool _votingOpen; //TODO eventually get this from the Session table instead.
 
         public VotingService(MovieBotContext context)
         {
-            _context = context;
+            _dbManager  = new DbManager(context);
             _votingOpen = false;
         }
 
         public void Vote(IUser user, int movieId)
         {
-            var findNomination = _context.WeeklyNominations.FirstOrDefault(x => x.VotingID == movieId);
+            var findNomination = _dbManager.FindNomination(movieId);
 
             if(findNomination == null)
             {
@@ -37,27 +39,24 @@ namespace dbot.Services
             }
 
             var newVote = new Vote(findNomination,new User(user));
-            var currVote = _context.WeeklyVotes.Where(x => x.User.Username == user.Username).FirstOrDefault();
+            var currVote = _dbManager.FindVote(user);
 
             if(currVote==null)
             {
-                _context.WeeklyVotes.Add(newVote);
-                _context.SaveChanges();
+                _dbManager.AddVote(newVote);
             }
             else
             {
-                currVote.Nomination = findNomination;
-                _context.Update(currVote);
-                _context.SaveChanges();
+                _dbManager.UpdateNominationInVote(currVote,findNomination);
             }
         }
 
         public bool VotingOpen()
         {
-            var current = _context.Sessions.Count();
+            var current = _dbManager.GetSessions().Count();
             if (current ==  0)
                 return false;
-            return _context.Sessions.Last().VoteOpen;
+            return _dbManager.GetCurrentSession().VoteOpen;
             //return _votingOpen;
         }
 
@@ -65,18 +64,24 @@ namespace dbot.Services
         {
             _votingOpen = true;
 
-            _context.Sessions.Add(new Session() {VoteOpen=true, });
-            _context.SaveChanges();
+            _dbManager.AddSession(new Session() {VoteOpen=true, });
         }
 
         public void EndVote()
         {
             _votingOpen = false;
             
-            var currSession =  _context.Sessions.Last();
+            var currSession =  _dbManager.GetCurrentSession();
+            if(currSession == null)
+            {
+                Console.WriteLine("Current session does not exist. Could not record vote end.");
+                return;
+            }
+
             currSession.VoteOpen = false;
             currSession.Timestamp = DateTime.Now;
-            _context.SaveChanges();
+
+            _dbManager.UpdateSession(currSession);
         }
 
         public IEnumerable<VotingResult> GetResults(IEnumerable<Nomination> nominations)
@@ -87,7 +92,7 @@ namespace dbot.Services
             foreach(var nomination in nominations)
             {
                 results.Add(new VotingResult { Movie = nomination,
-                                               Votes = _context.WeeklyVotes.Where(x => x.Nomination.VotingID == nomination.VotingID).Count() });
+                                               Votes = _dbManager.GetVotesForNomination(nomination) });
             }
             return results;
         }
@@ -101,12 +106,17 @@ namespace dbot.Services
             
             var winner = winners.Skip(toSkip).Take(1).Single();
 
-            var currSess =  _context.Sessions.Last();
+            var currSess =  _dbManager.GetCurrentSession();
+            if(currSess == null)
+            {
+                Console.WriteLine("Current Session does not exist. Could not update winner.");
+                return null;
+            }
             currSess.WinningIMDBId=winner.Movie.ImdbId;
             currSess.WinningName=winner.Movie.Name;
             currSess.WinningYear=winner.Movie.Year;
             currSess.NominatedBy=winner.Movie.User.Username;
-            _context.SaveChanges();
+            _dbManager.UpdateSession(currSess);
 
             return winner;
         }
@@ -126,13 +136,12 @@ namespace dbot.Services
 
         public IEnumerable<User> GetVoters()
         {
-            return _context.WeeklyVotes.Select( x => x.User);
+            return _dbManager.GetVoters().AsEnumerable();
         }
 
         public void ClearResults()
         {
-              _context.WeeklyVotes.RemoveRange(_context.WeeklyVotes);
-              _context.SaveChanges();
+            _dbManager.ClearVotes();
         }
     }
 }
