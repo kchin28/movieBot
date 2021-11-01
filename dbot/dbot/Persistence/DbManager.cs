@@ -35,12 +35,13 @@ namespace dbot.Persistence
         public void AddVote(Vote newVote)
         {
             _context.WeeklyVotes.Add(newVote);
-            _context.SaveChanges();
+          TrySaveChanges();
         }
 
         public void UpdateNominationInVote(Vote vote)
         {
-            _context.SaveChanges();
+            _context.Entry(vote).State = EntityState.Modified;
+           TrySaveChanges();
         }
 
         public List<Session> GetSessions()
@@ -59,12 +60,13 @@ namespace dbot.Persistence
         public void AddSession(Session newSession)
         {
             _context.Sessions.Add(newSession);
-            _context.SaveChanges();
+            TrySaveChanges();
         }
 
         public void UpdateSession(Session updatedSession)
         {
-            _context.SaveChanges();
+            _context.Entry(updatedSession).State = EntityState.Modified;
+            TrySaveChanges();
         }
 
         public int GetVotesForNomination(Nomination nomination)
@@ -80,18 +82,21 @@ namespace dbot.Persistence
         public void ClearVotes()
         {
             _context.WeeklyVotes.RemoveRange(_context.WeeklyVotes);
-            _context.SaveChanges();
+           TrySaveChanges();
         }
 
         public void AddNomination(Nomination newNom)
         {
              _context.WeeklyNominations.Add(newNom);
-            _context.SaveChanges();
+           TrySaveChanges();
         }
 
         public void UpdateNomination(Nomination currNom)
         {
-            _context.SaveChanges();
+            _context.Entry(currNom.ImdbId).State = EntityState.Modified;
+            _context.Entry(currNom.Name).State = EntityState.Modified;
+            _context.Entry(currNom.VotingID).State = EntityState.Modified;
+           TrySaveChanges();
         }
 
         public List<Nomination> GetNominations()
@@ -102,7 +107,7 @@ namespace dbot.Persistence
         public void ClearNominations()
         {
             _context.WeeklyNominations.RemoveRange(_context.WeeklyNominations);
-            _context.SaveChanges();
+            TrySaveChanges();
         }
 
         public Nomination GetNomination(IUser user)
@@ -113,12 +118,24 @@ namespace dbot.Persistence
         public void DeleteNomination(Nomination nom)
         {
             _context.WeeklyNominations.Remove(nom);
-            _context.SaveChanges();
+            TrySaveChanges();
         }
 
         public void UpdateVotingIDs(IEnumerable<Nomination> nominations)
         {
+            TrySaveChanges();
+        }
+
+        private void TrySaveChanges()
+        {
+            try
+            {
             _context.SaveChanges();
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine($"Inner Exception: {e.InnerException}"); 
+            }
         }
     }
 }
