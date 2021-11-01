@@ -5,6 +5,11 @@ namespace dbot.Data
 {
     public class MovieBotContext : DbContext
     {
+        private const string DBCONN = "Data Source=./movieBot.db";
+
+        public MovieBotContext() 
+        {
+        }
         public MovieBotContext(DbContextOptions<MovieBotContext> options) : base(options)
         {
         }
@@ -14,7 +19,10 @@ namespace dbot.Data
         public DbSet<Session> Sessions {get;set;}
         //public DbSet<Movie> Movies {get;set;}
 
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(DBCONN);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Nomination>().ToTable("WeeklyNominations");

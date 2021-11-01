@@ -21,12 +21,12 @@ namespace dbot.Services
        // private MovieBotContext _context;
 
         private IDbManager _dbManager;
-        private bool _votingOpen; //TODO eventually get this from the Session table instead.
+     //   private bool _votingOpen; //TODO eventually get this from the Session table instead.
 
         public VotingService(IDbManager manager)
         {
             _dbManager  = manager;
-            _votingOpen = false;
+         //   _votingOpen = false;
         }
 
         public void Vote(IUser user, int movieId)
@@ -58,20 +58,21 @@ namespace dbot.Services
             var current = _dbManager.GetSessions().Count();
             if (current ==  0)
                 return false;
+
             return _dbManager.GetCurrentSession().VoteOpen;
             //return _votingOpen;
         }
 
         public void StartVote()
         {
-            _votingOpen = true;
+          //  _votingOpen = true;
 
-            _dbManager.AddSession(new Session() {VoteOpen=true, });
+            _dbManager.AddSession(new Session() {VoteOpen=true, Timestamp=DateTime.Now});
         }
 
         public void EndVote()
         {
-            _votingOpen = false;
+           // _votingOpen = false;
             
             var currSession =  _dbManager.GetCurrentSession();
             if(currSession == null)

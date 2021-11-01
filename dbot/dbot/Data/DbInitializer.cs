@@ -1,5 +1,6 @@
 
 using dbot.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -9,16 +10,16 @@ namespace dbot.Data
     {
         public static void Initialize(MovieBotContext context)
         {
-            var created = context.Database.EnsureCreated();
+            context.Database.Migrate();
 
-            if (created)
-            {
-                Console.WriteLine("db exists");
-            }
-            else
-            {
-                Console.WriteLine("db did not exist. Creating..");
-            }
+            // if (created)
+            // {
+            //     Console.WriteLine("db exists");
+            // }
+            // else
+            // {
+            //     Console.WriteLine("db did not exist. Creating..");
+            // }
 
            //none of the tables need to be seeded at initial creation / before a weekly session
            //tables can/should be seeded if db was lost during an open vote/open nomination session -- could seed from autoDictionary xml backup or from creeping discord channel?

@@ -17,7 +17,7 @@ namespace dbot
 {
     class Program
     {
-        private const string DBCONN = "Data Source=movieBot.db";
+        private const string DBCONN = "Data Source=./movieBot.db";
 
         private CommandService commands;
         private DiscordSocketClient client;

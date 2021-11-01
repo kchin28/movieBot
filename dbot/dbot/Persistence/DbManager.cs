@@ -50,7 +50,10 @@ namespace dbot.Persistence
         
         public Session GetCurrentSession()
         {
-            return _context.Sessions.Last();
+            if(_context.Sessions?.Count()==0)
+                return null;
+
+            return _context.Sessions.OrderBy(x => x.Timestamp).Last();
         }
 
         public void AddSession(Session newSession)
