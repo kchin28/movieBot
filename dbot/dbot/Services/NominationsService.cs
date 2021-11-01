@@ -14,9 +14,9 @@ namespace dbot.Services
         //private MovieBotContext _context;
         private IDbManager _dbManager;
 
-        public NominationsService(MovieBotContext context)
+        public NominationsService(IDbManager manager)
         {
-            _dbManager = new DbManager(context);
+            _dbManager = manager;
         }
         
         public void AddNomination(IUser user, string title, string imdbId) 

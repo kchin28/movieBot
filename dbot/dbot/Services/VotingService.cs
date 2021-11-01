@@ -23,9 +23,9 @@ namespace dbot.Services
         private IDbManager _dbManager;
         private bool _votingOpen; //TODO eventually get this from the Session table instead.
 
-        public VotingService(MovieBotContext context)
+        public VotingService(IDbManager manager)
         {
-            _dbManager  = new DbManager(context);
+            _dbManager  = manager;
             _votingOpen = false;
         }
 
