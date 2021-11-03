@@ -25,6 +25,10 @@ namespace dbot.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasIndex(u => u.Key).IsUnique();
+            modelBuilder.Entity<Nomination>().HasOne(n => n.User).WithMany().HasPrincipalKey(x => x.Key);
+            modelBuilder.Entity<Vote>().HasOne(n => n.User).WithMany().HasPrincipalKey(x => x.Key);
+            
             modelBuilder.Entity<Nomination>().ToTable("WeeklyNominations");
             modelBuilder.Entity<Vote>().ToTable("WeeklyVotes");
             modelBuilder.Entity<Session>().ToTable("Sessions");

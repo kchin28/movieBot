@@ -19,28 +19,36 @@ namespace dbot.Persistence
             _context = context;
         }
 
+        public User FindUser(IUser user)
+        {
+            return _context.Users.FirstOrDefault(x => x.Key == user.Username+user.Discriminator);
+        }
+        public void AddUser(User user)
+        {
+            _context.Users.Add(user);
+            TrySaveChanges();  
+        }
         public Nomination FindNomination(int movieId)
         {
             return _context.WeeklyNominations.FirstOrDefault(x => x.VotingID == movieId);
         }
         public Nomination FindNomination(IUser user)
         {
-            return _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault();
+            return _context.WeeklyNominations.Where(x => x.User.Key == user.Username+user.Discriminator).FirstOrDefault();
         }
         public Vote FindVote(IUser user)
         {
-            return _context.WeeklyVotes.Where(x => x.User.Username == user.Username).FirstOrDefault();
+            return _context.WeeklyVotes.Where(x => x.User.Key == user.Username+user.Discriminator).FirstOrDefault();
         }
 
         public void AddVote(Vote newVote)
         {
             _context.WeeklyVotes.Add(newVote);
-          TrySaveChanges();
+            TrySaveChanges();
         }
 
         public void UpdateNominationInVote(Vote vote)
         {
-            _context.Entry(vote).State = EntityState.Modified;
            TrySaveChanges();
         }
 
@@ -59,13 +67,14 @@ namespace dbot.Persistence
 
         public void AddSession(Session newSession)
         {
+            _context.ChangeTracker.Clear();
             _context.Sessions.Add(newSession);
             TrySaveChanges();
         }
 
         public void UpdateSession(Session updatedSession)
         {
-            _context.Entry(updatedSession).State = EntityState.Modified;
+        
             TrySaveChanges();
         }
 
@@ -87,15 +96,12 @@ namespace dbot.Persistence
 
         public void AddNomination(Nomination newNom)
         {
-             _context.WeeklyNominations.Add(newNom);
+            _context.WeeklyNominations.Add(newNom);
            TrySaveChanges();
         }
 
         public void UpdateNomination(Nomination currNom)
         {
-            _context.Entry(currNom.ImdbId).State = EntityState.Modified;
-            _context.Entry(currNom.Name).State = EntityState.Modified;
-            _context.Entry(currNom.VotingID).State = EntityState.Modified;
            TrySaveChanges();
         }
 
@@ -112,7 +118,7 @@ namespace dbot.Persistence
 
         public Nomination GetNomination(IUser user)
         {
-            return _context.WeeklyNominations.Where(x => x.User.Username == user.Username).FirstOrDefault(); 
+            return _context.WeeklyNominations.Where(x => x.User.Key == user.Username+user.Discriminator).FirstOrDefault(); 
         }
 
         public void DeleteNomination(Nomination nom)

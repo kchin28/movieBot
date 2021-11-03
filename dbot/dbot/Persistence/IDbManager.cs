@@ -6,6 +6,8 @@ namespace dbot.Persistence
 {
     public interface IDbManager
     {
+        User FindUser(IUser user);
+        void AddUser(User user);
         Nomination FindNomination(int movieId);
         Nomination FindNomination(IUser user);
         Vote FindVote(IUser user);

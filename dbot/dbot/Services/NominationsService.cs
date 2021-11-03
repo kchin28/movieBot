@@ -21,8 +21,16 @@ namespace dbot.Services
         
         public void AddNomination(IUser user, string title, string imdbId) 
         {
+            var findUser = _dbManager.FindUser(user);
+            
+            if(findUser == null)
+            {
+                findUser = new User(user);
+                _dbManager.AddUser(findUser);
+            }
+
             // Only keeps last nomination
-            var newNom = new Nomination(title, GetNextId(),imdbId,new User(user));
+            var newNom = new Nomination(title, GetNextId(),imdbId,findUser);
 
             var currNom = _dbManager.FindNomination(user);
 

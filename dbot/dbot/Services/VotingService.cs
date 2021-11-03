@@ -39,7 +39,14 @@ namespace dbot.Services
                 return;
             }
 
-            var newVote = new Vote(findNomination,new User(user));
+            var findUser = _dbManager.FindUser(user);
+            if(findUser == null)
+            {
+                Console.WriteLine($"Could not find user {user.Username}");
+                return;
+            }
+
+            var newVote = new Vote(findNomination,findUser);
             var currVote = _dbManager.FindVote(user);
 
             if(currVote==null)
@@ -118,7 +125,7 @@ namespace dbot.Services
             currSess.WinningIMDBId=winner.Movie.ImdbId;
             currSess.WinningName=winner.Movie.Name;
             currSess.WinningYear=winner.Movie.Year;
-            currSess.NominatedBy=winner.Movie.User.Username;
+            currSess.NominatedBy=winner.Movie.User.Key;
             _dbManager.UpdateSession(currSess);
 
             return winner;
