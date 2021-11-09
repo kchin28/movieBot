@@ -40,8 +40,6 @@ namespace dbot
 
             var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
             var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
-         //   var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
-     //       var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();

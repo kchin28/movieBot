@@ -11,7 +11,6 @@ namespace dbot.Services
 {
     public class NominationsService
     {
-        //private MovieBotContext _context;
         private IDbManager _dbManager;
 
         public NominationsService(IDbManager manager)
