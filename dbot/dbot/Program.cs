@@ -64,6 +64,7 @@ namespace dbot
             catch (Exception ex)
             {
                 Console.WriteLine("Something went wrong during DB initialize: " + ex.Message);
+                throw(ex);
             }
 
             await InstallCommands();

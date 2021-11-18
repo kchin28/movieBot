@@ -276,3 +276,5 @@ debugsecrets.json
 
 #db files
 *.db
+
+#migrations

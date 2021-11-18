@@ -141,6 +141,7 @@ namespace dbot.Persistence
             catch (DbUpdateException e)
             {
                 Console.WriteLine($"Inner Exception: {e.InnerException}"); 
+                throw(e);
             }
         }
     }

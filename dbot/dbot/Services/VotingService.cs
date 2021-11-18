@@ -31,7 +31,7 @@ namespace dbot.Services
 
             if(findNomination == null)
             {
-                Console.WriteLine("Attempting to vote for non existient Nomination");
+                Console.WriteLine("Attempting to vote for non existent Nomination");
                 return;
             }
 
@@ -60,7 +60,9 @@ namespace dbot.Services
         {
             var current = _dbManager.GetSessions().Count();
             if (current ==  0)
+            {
                 return false;
+            }
 
             return _dbManager.GetCurrentSession().VoteOpen;
         }

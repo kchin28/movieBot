@@ -51,7 +51,9 @@ namespace dbot.Services
         {
             var nominations = GetNominations();
             if(nominations == null)
+            {
                 return false;
+            }
             return nominations.Where(n => n.ImdbId == imdbId).Any();
         }
 
@@ -59,7 +61,9 @@ namespace dbot.Services
         {
             var current = GetNominations();
             if(current == null)
+            {
                 return string.Empty;
+            }
 
             var movies = current.Select(x => x.Name);
             var sb = new StringBuilder();
@@ -76,7 +80,9 @@ namespace dbot.Services
             var nominations = GetNominations();
             
             if(nominations == null)
+            {
                 return string.Empty;
+            }
         
             var sb = new StringBuilder();
 
