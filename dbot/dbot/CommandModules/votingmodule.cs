@@ -60,10 +60,9 @@ namespace dbot.CommandModules
             if (_votingService.VotingOpen())
             {
                 Console.WriteLine("Ending voting session");
+                var results = _votingService.GetResults(_nominationsService.GetNominations());
                 _votingService.EndVote();
 
-                var results = _votingService.GetResults(_nominationsService.GetNominations());
-                _votingService.ClearResults();
                 _nominationsService.ClearNominations();
 
                 var sb = new StringBuilder();

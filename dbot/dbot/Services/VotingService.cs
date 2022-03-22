@@ -23,8 +23,8 @@ namespace dbot.Services
 
         public VotingService(IRepository<User, int> votes)
         {
-            _votingOpen = false;
             _votes = votes;
+            _votingOpen = votes.Any();
         }
 
         public void Vote(IUser user, int movieId)
@@ -44,11 +44,13 @@ namespace dbot.Services
 
         public void StartVote()
         {
+            _votes.Clear();
             _votingOpen = true;
         }
 
         public void EndVote()
         {
+            _votes.Clear();
             _votingOpen = false;
         }
 
@@ -91,11 +93,6 @@ namespace dbot.Services
         public IEnumerable<User> GetVoters()
         {
             return _votes.Keys;
-        }
-
-        public void ClearResults()
-        {
-            _votes.Clear();
         }
     }
 }
