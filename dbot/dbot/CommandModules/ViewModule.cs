@@ -54,16 +54,22 @@ namespace dbot.CommandModules
         public async Task ViewVotes()
         {
             Console.WriteLine("Got view votes request");
-
-            var votes = _votingService.GetResults(_nominationsService.GetNominations());
-            var sb = new StringBuilder();
-
-            foreach (var v in votes)
+            if (_votingService.VotingOpen())
             {
-                sb.AppendLine($"{v.Movie.VotingId}. {v.Movie.Name}: {v.Votes}");
-            }
+                var votes = _votingService.GetResults(_nominationsService.GetNominations());
+                var sb = new StringBuilder();
 
-            await ReplyAsync(sb.ToString());
+                foreach (var v in votes)
+                {
+                    sb.AppendLine($"{v.Movie.VotingId}. {v.Movie.Name}: {v.Votes}");
+                }
+
+                await ReplyAsync(sb.ToString());
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
 
         }
         [Command("Voters")]
@@ -72,17 +78,25 @@ namespace dbot.CommandModules
         public async Task ViewVoters()
         {
             Console.WriteLine("Got view voters request");
-            var voters = _votingService.GetVoters();
-
-            var sb = new StringBuilder();
-            sb.AppendLine("Current Voters:");
-
-            foreach (var u in voters)
+            
+            if(_votingService.VotingOpen())
             {
-                sb.AppendLine($"{u.Username}");
-            }
+                var voters = _votingService.GetVoters();
 
-            await ReplyAsync(sb.ToString());
+                var sb = new StringBuilder();
+                sb.AppendLine("Current Voters:");
+
+                foreach (var u in voters)
+                {
+                    sb.AppendLine($"{u.Username}");
+                }
+
+                await ReplyAsync(sb.ToString());
+            }
+            else
+            {
+                await ReplyAsync($"There is no vote in progress");
+            }
         }
 
     }
