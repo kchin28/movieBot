@@ -35,7 +35,8 @@ namespace dbot.CommandModules
             
             if (!noms.Any())
             {
-                return;
+               await ReplyAsync($"There are no current nominations");
+               return;
             }
 
             var sb = new StringBuilder();
@@ -78,7 +79,7 @@ namespace dbot.CommandModules
         public async Task ViewVoters()
         {
             Console.WriteLine("Got view voters request");
-            
+
             if(_votingService.VotingOpen())
             {
                 var voters = _votingService.GetVoters();
