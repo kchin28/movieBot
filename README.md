@@ -4,7 +4,19 @@
 To build moviebot, run
 ```
 cd dbot/
+docker build . -t <id>/moviebot:<version>
+```
+
+To build moviebot for a specific platform, run
+```
+cd dbot/
 docker build --platform linux/arm/v7 . -t <id>/moviebot:<version>
+```
+
+To build moviebot for multiple platforms, run
+```
+cd dbot/
+docker buildx build --push --platform linux/amd64,linux/arm/v7 --tag <id>/moviebot:<version> .
 ```
 Up to date builds can be found at https://hub.docker.com/r/dktrotti/moviebot
 
