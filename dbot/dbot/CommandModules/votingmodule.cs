@@ -6,6 +6,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using dbot.Services;
+using dbot.Models;
 using System.Linq;
 
 namespace dbot.CommandModules
@@ -123,7 +124,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got vote");
             if (_votingService.VotingOpen())
             {
-                if (_nominationsService.GetNominations().Select(x => x.VotingId).Contains(movId))
+                if (_nominationsService.GetNominations().Select(x => x.VotingID).Contains(movId))
                 {
                     _votingService.Vote(Context.User, movId);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
@@ -168,7 +169,7 @@ namespace dbot.CommandModules
                 }
                 else 
                 {
-                    _votingService.Vote(Context.User, nomination.VotingId);
+                    _votingService.Vote(Context.User, nomination.VotingID);
                     await ReplyAsync($"{Context.User.Username}, your vote has been registered!");
                 }
             }
@@ -208,7 +209,7 @@ namespace dbot.CommandModules
             Console.WriteLine("Got half-assed random vote");
             if (_votingService.VotingOpen())
             {
-                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.VotingId));
+                var nominations = _nominationsService.GetNominations().Where(n => candidates.Contains(n.VotingID));
 
                 if(_votingService.VoteForRandomCandidate(Context.User, nominations))
                 {

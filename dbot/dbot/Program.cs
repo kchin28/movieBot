@@ -9,11 +9,16 @@ using dbot.Services;
 using dbot.CommandModules;
 using dbot.Persistence;
 using dbot.Models;
+using dbot.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace dbot
 {
     class Program
     {
+        private const string DBCONN = "Data Source=./movieBot.db";
+
         private CommandService commands;
         private DiscordSocketClient client;
         private IServiceProvider services;
@@ -35,20 +40,34 @@ namespace dbot
 
             var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
             var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
-            var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
-            var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
+         //   var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
+     //       var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
             Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
 
             client = new DiscordSocketClient();
             commands = new CommandService();
             serviceCollection = new ServiceCollection();
           
-            serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>(nominationsFile)));
-            serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
+            serviceCollection.AddDbContext<MovieBotContext>(options => options.UseSqlite(DBCONN));
+            serviceCollection.AddScoped<IDbManager,DbManager>();
+            serviceCollection.AddScoped<NominationsService>();
+            serviceCollection.AddScoped<VotingService>();
             serviceCollection.AddSingleton(new OmdbService(omdbToken));
             serviceCollection.AddSingleton(commands);
 
             services = serviceCollection.BuildServiceProvider();
+
+            //check for db and create it if it does not exist
+            try
+            {
+                var context = services.GetRequiredService<MovieBotContext>();
+                DbInitializer.Initialize(context);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Something went wrong during DB initialize: " + ex.Message);
+            }
+
             await InstallCommands();
 
             await client.LoginAsync(Discord.TokenType.Bot, discordToken);

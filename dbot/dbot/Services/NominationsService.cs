@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using dbot.Data;
 using dbot.Models;
 using dbot.Persistence;
 using Discord;
@@ -10,36 +11,57 @@ namespace dbot.Services
 {
     public class NominationsService
     {
-        private readonly IRepository<User, Nomination> currNoms;
+        //private MovieBotContext _context;
+        private IDbManager _dbManager;
 
-        public NominationsService(IRepository<User, Nomination> nominations)
+        public NominationsService(IDbManager manager)
         {
-            currNoms = nominations;
+            _dbManager = manager;
         }
-
+        
         public void AddNomination(IUser user, string title, string imdbId) 
         {
-            // Only keeps last nomination
-            var newNom = new Nomination(title, GetNextId(),imdbId);
+            var findUser = _dbManager.FindUser(user);
+            
+            if(findUser == null)
+            {
+                findUser = new User(user);
+                _dbManager.AddUser(findUser);
+            }
 
-            currNoms.AddOrUpdate(new User(user), newNom,
-                (k, v) =>
-                {
-                    v.ImdbId  = newNom.ImdbId;
-                    v.Name    = newNom.Name;
-                    return v;
-                });
+            // Only keeps last nomination
+            var newNom = new Nomination(title, GetNextId(),imdbId,findUser);
+
+            var currNom = _dbManager.FindNomination(user);
+
+            if(currNom==null)
+            {
+                _dbManager.AddNomination(newNom);
+            }
+            else
+            {
+                currNom.ImdbId= newNom.ImdbId;
+                currNom.Name = newNom.Name;
+                currNom.VotingID = newNom.VotingID;
+
+               _dbManager.UpdateNomination(currNom);
+            }
         }
 
         public bool IsNominated(string imdbId)
         {
             var nominations = GetNominations();
+            if(nominations == null)
+                return false;
             return nominations.Where(n => n.ImdbId == imdbId).Any();
         }
 
         public string ViewNominations()
         {
             var current = GetNominations();
+            if(current == null)
+                return string.Empty;
+
             var movies = current.Select(x => x.Name);
             var sb = new StringBuilder();
 
@@ -53,11 +75,15 @@ namespace dbot.Services
         public string ViewNominationsWithId()
         {
             var nominations = GetNominations();
+            
+            if(nominations == null)
+                return string.Empty;
+        
             var sb = new StringBuilder();
 
             foreach(var nomination in nominations)
             {
-                sb.AppendLine($"{nomination.VotingId}. {nomination.Name}");
+                sb.AppendLine($"{nomination.VotingID}. {nomination.Name}");
             }
 
             return sb.ToString();
@@ -65,23 +91,27 @@ namespace dbot.Services
 
         public IEnumerable<Nomination> GetNominations()
         {
-            return currNoms.Select(x => x.Value).OrderBy(x => x.VotingId);
+            return _dbManager.GetNominations().AsEnumerable();
         }
 
         public void ClearNominations()
         {
-            currNoms.Clear();
+            _dbManager.ClearNominations();
         }
 
         public bool UserHasNomination(IUser user, out Nomination nomination)
         {
-            return currNoms.TryGetValue(new User(user), out nomination);
+            var currentUserNom = _dbManager.GetNomination(user);
+            nomination = currentUserNom;
+            return currentUserNom == null;
         }
 
         public void DeleteNominationForUser(IUser user)
         {
-            if (currNoms.TryRemove(new User(user), out _))
+            var nom = _dbManager.GetNomination(user);
+            if(nom!=null)
             {
+                _dbManager.DeleteNomination(nom);
                 FixNominationIds();
             }
         }
@@ -89,37 +119,20 @@ namespace dbot.Services
         private void FixNominationIds()
         {
             // Grab the entire nominations list
-            var nominations = currNoms.ToArray();
+            var nominations = _dbManager.GetNominations().ToArray();
             // Re-number from 1 to n of remaining nominations
             int id = 1;
 
             foreach(var nomination in nominations)
             {
-                nomination.Value.VotingId = id++;
-                currNoms.AddOrUpdate(nomination.Key, nomination.Value, (k, v) => { return nomination.Value; });
+                nomination.VotingID = id++;
             }
+            _dbManager.UpdateVotingIDs(nominations);
         }
 
         private int GetNextId()
         {
-            return currNoms.Count() + 1;
+            return _dbManager.GetNominations().Count() + 1;
         }
-    }
-
-    public class Nomination 
-    {
-        public string Name;
-        public int VotingId;
-        public string ImdbId;
-
-        public Nomination(string name, int votingId, string imdbId) 
-        {
-            Name = name;
-            VotingId = votingId;
-            ImdbId = imdbId;
-        }
-
-        public Nomination() { }
-
     }
 }
