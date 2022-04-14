@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        # Fetch all tags/history
+        fetch-depth: 0
+    - name: Calculate version
+      id: calculate-minver-version
+      run: >
+        dotnet tool install --global minver-cli --version 3.1.0;
+        VERSION=$(minver . --verbosity warn);
+        if [$VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9a-zA-Z.]*)?(\+[0-9a-zA-Z]*)?$]; then
+          echo "::set-output minver_version::$VERSION";
+        else
+          echo "::error Invalid version: $VERSION";
+          exit 1;
+        fi
+
+
+    - name: Get version
+      run: echo "The version is ${{ steps.calculate-minver-version.outputs.MINVER_VERSION }}"
