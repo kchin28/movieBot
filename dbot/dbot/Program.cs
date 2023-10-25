@@ -60,7 +60,7 @@ namespace dbot
                     await client.StartAsync();
                     await Task.Delay(-1);
                 }
-                catch (HttpWebRequestException e)
+                catch (HttpRequestException e)
                 {
                     Console.WriteLine(e);
                     await Task.Delay(TimeSpan.FromMinutes(30));
