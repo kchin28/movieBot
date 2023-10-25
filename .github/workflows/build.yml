@@ -22,7 +22,7 @@ jobs:
         VERSION=$(minver . --verbosity warn);
         if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9a-zA-Z.]*)?(\+[0-9a-zA-Z]*)?$ ]]; then
           echo "::info Found version: $VERSION";
-          echo "::set-output name=MINVER_VERSION::$VERSION";
+          echo "MINVER_VERSION=$VERSION" >> $GITHUB_OUTPUT;
         else
           echo "::error Invalid version: $VERSION";
           exit 1;
