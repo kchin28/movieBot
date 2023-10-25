@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Reflection;
 using Discord;
@@ -23,37 +24,48 @@ namespace dbot
 
         public async Task MainAsync(string[] args)
         {
-            TokenManager tokenManager;
-            if (args.Length == 0)
+            while (true)
             {
-                tokenManager = new TokenManager();
+                try
+                {
+                    TokenManager tokenManager;
+                    if (args.Length == 0)
+                    {
+                        tokenManager = new TokenManager();
+                    }
+                    else
+                    {
+                        tokenManager = new TokenManager(args[0]);
+                    }
+        
+                    var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
+                    var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
+                    var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
+                    var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
+                    Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
+        
+                    client = new DiscordSocketClient();
+                    commands = new CommandService();
+                    serviceCollection = new ServiceCollection();
+                  
+                    serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>(nominationsFile)));
+                    serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
+                    serviceCollection.AddSingleton(new OmdbService(omdbToken));
+                    serviceCollection.AddSingleton(commands);
+        
+                    services = serviceCollection.BuildServiceProvider();
+                    await InstallCommands();
+        
+                    await client.LoginAsync(Discord.TokenType.Bot, discordToken);
+                    await client.StartAsync();
+                    await Task.Delay(-1);
+                }
+                catch (HttpWebRequestException e)
+                {
+                    Console.WriteLine(e);
+                    await Task.Delay(TimeSpan.FromMinutes(30));
+                }
             }
-            else
-            {
-                tokenManager = new TokenManager(args[0]);
-            }
-
-            var discordToken = tokenManager.GetToken(TokenKey.DiscordToken);
-            var omdbToken = tokenManager.GetToken(TokenKey.OMDBToken);
-            var nominationsFile = tokenManager.GetToken(TokenKey.NominationsFile);
-            var votesFile = tokenManager.GetToken(TokenKey.VotesFile);
-            Console.WriteLine($"Hello World! {omdbToken} {discordToken}");
-
-            client = new DiscordSocketClient();
-            commands = new CommandService();
-            serviceCollection = new ServiceCollection();
-          
-            serviceCollection.AddSingleton(new NominationsService(new AutoSerializedDictionary<User, Nomination>(nominationsFile)));
-            serviceCollection.AddSingleton(new VotingService(new AutoSerializedDictionary<User, int>(votesFile)));
-            serviceCollection.AddSingleton(new OmdbService(omdbToken));
-            serviceCollection.AddSingleton(commands);
-
-            services = serviceCollection.BuildServiceProvider();
-            await InstallCommands();
-
-            await client.LoginAsync(Discord.TokenType.Bot, discordToken);
-            await client.StartAsync();
-            await Task.Delay(-1); 
         }
 
         public async Task InstallCommands() {
